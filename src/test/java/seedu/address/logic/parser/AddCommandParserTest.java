@@ -22,10 +22,10 @@ import static seedu.address.logic.commands.CommandTestUtil.PREAMBLE_WHITESPACE;
 import static seedu.address.logic.commands.CommandTestUtil.TAG_DESC_FOOD;
 import static seedu.address.logic.commands.CommandTestUtil.TAG_DESC_FRIEND;
 import static seedu.address.logic.commands.CommandTestUtil.TAG_DESC_HUSBAND;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_CATEGORY_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_COST_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_CATEGORY_IPHONE;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_COST_IPHONE;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_DATE_1990;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_IPHONE;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_FRIEND;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
@@ -102,19 +102,19 @@ public class AddCommandParserTest {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddCommand.MESSAGE_USAGE);
 
         // missing name prefix
-        assertParseFailure(parser, VALID_NAME_BOB + CATEGORY_DESC_BOB + COST_DESC_BOB,
+        assertParseFailure(parser, VALID_NAME_IPHONE + CATEGORY_DESC_BOB + COST_DESC_BOB,
                 expectedMessage);
 
         // missing category prefix
-        assertParseFailure(parser, NAME_DESC_BOB + VALID_CATEGORY_BOB + COST_DESC_BOB,
+        assertParseFailure(parser, NAME_DESC_BOB + VALID_CATEGORY_IPHONE + COST_DESC_BOB,
                 expectedMessage);
 
         // missing address prefix
-        assertParseFailure(parser, NAME_DESC_BOB + CATEGORY_DESC_BOB + VALID_COST_BOB,
+        assertParseFailure(parser, NAME_DESC_BOB + CATEGORY_DESC_BOB + VALID_COST_IPHONE,
                 expectedMessage);
 
         // all prefixes missing
-        assertParseFailure(parser, VALID_NAME_BOB + VALID_CATEGORY_BOB + VALID_COST_BOB,
+        assertParseFailure(parser, VALID_NAME_IPHONE + VALID_CATEGORY_IPHONE + VALID_COST_IPHONE,
                 expectedMessage);
     }
 
@@ -130,7 +130,7 @@ public class AddCommandParserTest {
 
         // invalid address
         assertParseFailure(parser, NAME_DESC_BOB + CATEGORY_DESC_BOB + INVALID_ADDRESS_DESC
-                + TAG_DESC_HUSBAND + TAG_DESC_FRIEND, Cost.MESSAGE_ADDRESS_CONSTRAINTS);
+                + TAG_DESC_HUSBAND + TAG_DESC_FRIEND, Cost.MESSAGE_COST_CONSTRAINTS);
 
         // invalid tag
         assertParseFailure(parser, NAME_DESC_BOB + CATEGORY_DESC_BOB + COST_DESC_BOB

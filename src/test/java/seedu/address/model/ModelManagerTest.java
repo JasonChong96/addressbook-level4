@@ -2,21 +2,26 @@ package seedu.address.model;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.model.Model.PREDICATE_SHOW_ALL_EXPENSES;
-import static seedu.address.testutil.TypicalExpenses.ALICE;
-import static seedu.address.testutil.TypicalExpenses.BENSON;
+import static seedu.address.testutil.TypicalExpenses.ICECREAM;
+import static seedu.address.testutil.TypicalExpenses.SCHOOLFEE;
 
 import java.nio.file.Paths;
-import java.util.Arrays;
+
+import java.util.Optional;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import seedu.address.logic.commands.StatsCommand.StatsMode;
+import seedu.address.logic.parser.ArgumentMultimap;
+import seedu.address.logic.parser.ArgumentTokenizer;
 import seedu.address.model.exceptions.NoUserSelectedException;
 import seedu.address.model.exceptions.NonExistentUserException;
 import seedu.address.model.exceptions.UserAlreadyExistsException;
-import seedu.address.model.expense.NameContainsKeywordsPredicate;
+import seedu.address.model.expense.ExpenseContainsKeywordsPredicate;
 import seedu.address.testutil.AddressBookBuilder;
 import seedu.address.testutil.ModelUtil;
 
@@ -31,6 +36,36 @@ public class ModelManagerTest {
     }
 
     @Test
+    public void checkBudgetRestart_noFrequency_doesNotResetSpending() throws NoUserSelectedException {
+        double previousExpenses = modelManager.getMaximumBudget().getCurrentExpenses();
+        modelManager.checkBudgetRestart();
+        assertTrue(modelManager.getAddressBook().getMaximumBudget().getCurrentExpenses() == previousExpenses);
+    }
+
+    @Test
+    public void checkBudgetRestart_frequency_doesNotResetSpendingIfNotNextRecurrence() throws NoUserSelectedException {
+        double previousExpenses = modelManager.getMaximumBudget().getCurrentExpenses();
+        modelManager.setRecurrenceFrequency(Integer.MAX_VALUE);
+        modelManager.checkBudgetRestart();
+        assertTrue(modelManager.getAddressBook().getMaximumBudget().getCurrentExpenses() == previousExpenses);
+    }
+
+    @Test
+    public void checkBudgetRestart_frequency_resetSpendingIfNextRecurrence() throws NoUserSelectedException {
+        modelManager.setRecurrenceFrequency(0);
+        try {
+
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            System.out.println("Interrupted. Skipping test.");
+            return;
+        }
+        modelManager.checkBudgetRestart();
+        assertTrue(modelManager.getAddressBook().getMaximumBudget().getCurrentExpenses() == 0);
+    }
+
+
+    @Test
     public void hasExpense_nullExpense_throwsNullPointerException() throws NoUserSelectedException {
         thrown.expect(NullPointerException.class);
         modelManager.hasExpense(null);
@@ -38,13 +73,13 @@ public class ModelManagerTest {
 
     @Test
     public void hasExpense_expenseNotInAddressBook_returnsFalse() throws NoUserSelectedException {
-        assertFalse(modelManager.hasExpense(ALICE));
+        assertFalse(modelManager.hasExpense(SCHOOLFEE));
     }
 
     @Test
     public void hasExpense_expenseInAddressBook_returnsTrue() throws NoUserSelectedException {
-        modelManager.addExpense(ALICE);
-        assertTrue(modelManager.hasExpense(ALICE));
+        modelManager.addExpense(SCHOOLFEE);
+        assertTrue(modelManager.hasExpense(SCHOOLFEE));
     }
 
     @Test
@@ -68,7 +103,7 @@ public class ModelManagerTest {
     @Test
     public void hasExpense_noUserSelected_throwsNoUserSelectedException() throws Exception {
         thrown.expect(NoUserSelectedException.class);
-        modelManagerLoggedOut.hasExpense(ALICE);
+        modelManagerLoggedOut.hasExpense(SCHOOLFEE);
     }
 
     @Test
@@ -107,6 +142,15 @@ public class ModelManagerTest {
         modelManagerLoggedOut.updateExpenseStats(unused -> true);
     }
 
+
+    @Test
+    public void getExpenseStatsReturnsCorrectStatsMode() {
+        modelManager.updateStatsMode(StatsMode.DAY);
+        assertTrue(modelManager.getStatsMode() == StatsMode.DAY);
+        modelManager.updateStatsMode(StatsMode.MONTH);
+        assertTrue(modelManager.getStatsMode() == StatsMode.MONTH);
+    }
+
     @Test
     public void indicateUserLoggedIn_noUserSelected_throwsNoUserSelectedException() throws Exception {
         thrown.expect(NoUserSelectedException.class);
@@ -115,8 +159,8 @@ public class ModelManagerTest {
 
     @Test
     public void equals() throws NoUserSelectedException {
-        AddressBook addressBook = new AddressBookBuilder().withExpense(ALICE).withExpense(BENSON).build();
-        AddressBook differentAddressBook = new AddressBook(ModelUtil.TEST_USERNAME);
+        AddressBook addressBook = new AddressBookBuilder().withExpense(SCHOOLFEE).withExpense(ICECREAM).build();
+        AddressBook differentAddressBook = new AddressBook(ModelUtil.TEST_USERNAME, Optional.empty());
         UserPrefs userPrefs = new UserPrefs();
 
         // same values -> returns true
@@ -137,8 +181,9 @@ public class ModelManagerTest {
         assertFalse(modelManager.equals(new ModelManager(differentAddressBook, userPrefs)));
 
         // different filteredList -> returns false
-        String[] keywords = ALICE.getName().expenseName.split("\\s+");
-        modelManager.updateFilteredExpenseList(new NameContainsKeywordsPredicate(Arrays.asList(keywords)));
+        ArgumentMultimap keywordsMap = ArgumentTokenizer.tokenize(" n/"
+                + SCHOOLFEE.getName().expenseName, PREFIX_NAME);
+        modelManager.updateFilteredExpenseList(new ExpenseContainsKeywordsPredicate(keywordsMap));
         assertFalse(modelManager.equals(new ModelManager(addressBook, userPrefs)));
 
         // resets modelManager to initial state for upcoming tests

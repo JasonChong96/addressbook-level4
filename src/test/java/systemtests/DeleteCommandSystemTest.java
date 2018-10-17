@@ -7,7 +7,7 @@ import static seedu.address.logic.commands.DeleteCommand.MESSAGE_DELETE_EXPENSE_
 import static seedu.address.testutil.TestUtil.getExpense;
 import static seedu.address.testutil.TestUtil.getLastIndex;
 import static seedu.address.testutil.TestUtil.getMidIndex;
-import static seedu.address.testutil.TypicalExpenses.KEYWORD_MATCHING_MEIER;
+import static seedu.address.testutil.TypicalExpenses.KEYWORD_MATCHING_BUY;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_EXPENSE;
 
 import org.junit.Test;
@@ -28,6 +28,7 @@ public class DeleteCommandSystemTest extends AddressBookSystemTest {
 
     @Test
     public void delete() throws NoUserSelectedException {
+        showAllExpenses();
         /* -------------- Performing delete operation while an unfiltered list is being shown ----------------- */
 
         /* Case: delete the first expense in the list, command with leading spaces and trailing spaces -> deleted */
@@ -61,7 +62,7 @@ public class DeleteCommandSystemTest extends AddressBookSystemTest {
         /* --------------- Performing delete operation while a filtered list is being shown ------------------- */
 
         /* Case: filtered expense list, delete index within bounds of address book and expense list -> deleted */
-        showExpensesWithName(KEYWORD_MATCHING_MEIER);
+        showExpensesWithName(KEYWORD_MATCHING_BUY);
         Index index = INDEX_FIRST_EXPENSE;
         assertTrue(index.getZeroBased() < getModel().getFilteredExpenseList().size());
         assertCommandSuccess(index);
@@ -69,7 +70,7 @@ public class DeleteCommandSystemTest extends AddressBookSystemTest {
         /* Case: filtered expense list, delete index within bounds of address book but out of bounds of expense list
          * -> rejected
          */
-        showExpensesWithName(KEYWORD_MATCHING_MEIER);
+        showExpensesWithName(KEYWORD_MATCHING_BUY);
         int invalidIndex = getModel().getAddressBook().getExpenseList().size();
         command = DeleteCommand.COMMAND_WORD + " " + invalidIndex;
         assertCommandFailure(command, MESSAGE_INVALID_EXPENSE_DISPLAYED_INDEX);

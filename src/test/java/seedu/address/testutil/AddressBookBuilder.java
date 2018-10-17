@@ -1,5 +1,7 @@
 package seedu.address.testutil;
 
+import java.util.Optional;
+
 import seedu.address.model.AddressBook;
 import seedu.address.model.expense.Expense;
 
@@ -13,7 +15,7 @@ public class AddressBookBuilder {
     private AddressBook addressBook;
 
     public AddressBookBuilder() {
-        addressBook = new AddressBook(ModelUtil.TEST_USERNAME);
+        addressBook = new AddressBook(ModelUtil.TEST_USERNAME, Optional.empty());
     }
 
     public AddressBookBuilder(AddressBook addressBook) {

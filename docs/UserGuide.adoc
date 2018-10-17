@@ -18,23 +18,28 @@ By: `Team T12-1`      Since: `Sept 2018`      Licence: `MIT`
 
 == Introduction
 
-Expense Tracker (ET) is for those who prefer to use a desktop app for tracking their expenses. More importantly, EP is optimized for those who prefer to work with a Command Line Interface (CLI) while still having the benefits of a Graphical User Interface (GUI). If you can type fast, EP can get your expenses managed more efficiently than traditional GUI apps. Interested? Jump to the Section 2, “Quick Start” to get started. Enjoy!
+The Expense Tracker application is a desktop application which enables users to track their expenses. The application features both a Command Line Interface (CLI) and a Graphical User Interface (GUI) which provides users with the efficency of the CLI while still having the benefits of a GUI.
+
+Interested? Jump to <<Quick Start>> to get started!
 
 == Quick Start
 
-.  Ensure you have Java version `9` or later installed in your Computer.
+Follow these steps to start using the Expense Tracker:
 
+.  Install Java version `9` (or later) on your computer.
+.  Download the latest `expensetracker.jar` file from https://github.com/CS2103-AY1819S1-T12-1/main[here]
+.  Copy the file to the folder which you want to use as the home folder for your Expense Tracker.
+.  Double-click the `expensetracker.jar` file to start the app. The GUI should appear in a few seconds and look like this:
 +
-image::Ui.png[width="790"]
+image::UI.png[width="790"]
 +
-.  Type the command in the command box and press kbd:[Enter] to execute it. +
+.  Type the command `singup USERNAME` in the command box (the box where it says "Enter command here...") and press kbd:[Enter] to execute it, where USERNAME is the username of your choice. E.g. `signup username123`
+.  Type the command `login USERNAME` in the command box and press kbd:[Enter] to execute it, where USERNAME is the username you signed up with in the previous step. e.g. `login username123` +
+You are now able to use all the commands of the app. +
+.  Type commands in the command box, as highlighted in the figure below, and press kbd:[Enter] to execute it. +
 e.g. typing *`help`* and pressing kbd:[Enter] will open the help window.
-.  Some example commands you can try:
 
-* **`delete`**`3` : deletes the 3rd contact shown in the current list
-* *`exit`* : exits the app
-
-.  Refer to <<Features>> for details of each command.
+.  Refer to <<Features>> for details of all available commands.
 
 [[Features]]
 == Features
@@ -42,247 +47,396 @@ e.g. typing *`help`* and pressing kbd:[Enter] will open the help window.
 ====
 *Command Format*
 
-* Words in `UPPER_CASE` are the parameters to be supplied by the user e.g. in `add n/NAME`, `NAME` is a parameter which can be used as `add n/John Doe`.
-* Items in square brackets are optional e.g `n/NAME [t/TAG]` can be used as `n/John Doe t/friend` or as `n/John Doe`.
-* Items with `…`​ after them can be used multiple times including zero times e.g. `[t/TAG]...` can be used as `{nbsp}` (i.e. 0 times), `t/friend`, `t/friend t/family` etc.
-* Parameters can be in any order e.g. if the command specifies `n/NAME p/CATEGORY`, `p/CATEGORY n/NAME` is also acceptable.
+* All commands begin with the command word. The command word may be followed by parameters.
+* According to the format of each command, words in `UPPER_CASE` are the parameters which can be specified by the user
+** E.g. the `login` command has the format of `login USERNAME` where `USERNAME` is a parameter which can be replaced by a user specified value. In order to log in to an account with the username "username123", the user will enter the command `login username123`.
+* Parameters in square brackets are optional
+** E.g if a command has a parameter format of `n/EXPENSE_NAME [t/TAG]`, the parameters can be used as `n/Birthday Present t/Girlfriend`, which includes the "Girlfriend" tag, or as `n/Birthday Present`, which does not include a tag.
+* Parameters with `…`​ after them can be used multiple times including zero times
+** E.g. if a command format contains the parameter `[t/TAG]...`, the parameter can be replaced with `t/friend`, `t/friend t/family` etc.
+* Parameters can be in any order e.g. if the command format specifies `n/NAME p/CATEGORY`, using the parameters `p/CATEGORY n/NAME` is also acceptable.
 ====
 
+[NOTE]
 ====
-*Constraints*
+* Before a user is logged in, only `login`, `signup` and `help` commands are useable.
+* After a user is logged in, the rest of the commands will become useable.
+====
 
-* Before any user is logged in, only `login`, `signup` and `help` are useable.
-====
+These are the features and respective commands available to use in the Expense Tracker:
 
 === Signing up a User : `signup`
-Signs up a new user to the Expense Tracker
+Signs up a new user to the Expense Tracker.
 
 Format: `signup USERNAME`
 
 ****
-* USERNAME must not contain any of the following characters :  > < : \ / | ?
+*Examples:*
+
+*  `signup username123` +
+ Signs up a user with the username "username123".
 ****
+
+[NOTE]
+====
+* USERNAME must not contain any of the following characters :  > < : \ / | ?
+====
 
 === Logging in as an existing User : `login`
 Logs in to the Expense Tracker as an existing user and expands the UI to show the existing expenses if it is not already expanded.
 
-Format: `login USERNAME`
+Format: `login u/USERNAME [p/PASSWORD]`
 
 ****
-* USERNAME is case insensitive
-* The expense tracker contains a sample user with USERNAME `sample`
+*Examples:*
+
+*  `login u/username123` +
+ Logs in a user with the username "username123".
+*  `login u/username1234 p/password1` +
+ Logs in a user with the username "username1234" with password "password1".
 ****
+
+[NOTE]
+====
+* USERNAME is case insensitive
+* PASSWORD is case sensitive
+* PASSWORD cannot contain any spaces and must be at least 6 characters long
+* The expense tracker contains a sample user with USERNAME `sample`
+====
+
+=== Setting a password for the current user : `setpassword`
+Sets a new password for the currently logged in user.
+
+Format: `setpassword n/NEW_PASSWORD [o/OLD_PASSWORD]`
+
+****
+*Examples:*
+
+*  `setpassword n/pass123` +
+ Sets the current user's password as "pass123", provided that there is no previously set password
+*  `setpassword n/pass123 o/password1` +
+ Sets the current user's password as "pass123", provided that the current password is "password1"
+****
+
+[NOTE]
+====
+* OLD_PASSWORD is needed if a password has been previously set for the current user and they have to match.
+====
 
 === Viewing help : `help`
+Opens up a new window with the User Guide.
 
 Format: `help`
 
 === Adding an expense: `add`
-Adds an expense to the tracker
+Adds an expense to the tracker.
 
-Format: add n/EXPENSE_NAME $/COST c/CATEGORY [d/DATE] [t/TAG]...
+Format: `add n/EXPENSE_NAME $/COST c/CATEGORY [d/DATE] [t/TAG]...`
 
-Examples:
 ****
-*  add n/Lunch $/4.00 c/Food
-*  add n/Stationary $/1.80 c/School t/bookhaven
-*  add n/Project $/2.08 c/School d/01-01-2018
-****
+*Examples:*
 
-=== Setting a budget: `setBudget`
-Sets a cap on the expense tracker. Will warn you if you try
-to add an expense that will exceed your budget
-
-Format: setBudget MONEY_WITH_TWO_DECIMAL_PLACES
-
-Examples:
-****
-* setBudget 2.00
-* setBudget 20.00
+*  `add n/Lunch $/4.00 c/Food` +
+ Adds an expense with its name as "Lunch", cost as "4.00" and category as "Food".
+*  `add n/Stationery $/1.80 c/School t/bookhaven` +
+ Adds an expense with its name as "Stationery", cost as "1.80", category as "School" and Tag as "bookhaven".
+*  `add n/Project $/2.08 c/School d/01-01-2018` +
+ Adds an expense with its name as "Project", cost as "2.08", category as "School" and date as "01-01-2018".
 ****
 
-
-=== Listing all expenses : `list`
-
-Shows a list of all expenses in the expense tracker. +
-Format: `list`
+[NOTE]
+====
+* COST should be a non-zero positive number with two decimal places
+* If the user does not in put a DATE parameter, the expense  date will default to the current day.
+* DATE should be in the format of "dd-mm-yyyy".
+====
 
 === Editing an expense : `edit`
 
-Edits an existing expense in the expense tracker. +
-Format: `edit INDEX n/EXPENSE_NAME $/COST c/CATEGORY d/DATE t/TAG...`
+Edits the expense at the specified `INDEX`. The `INDEX` refers to the index number shown in the displayed expense list
+next to the name of the expense. +
+Existing values of the expense will be edited according to the value of the parameters +
+
+Format: `edit INDEX [n/EXPENSE_NAME] [$/COST] [c/CATEGORY] [d/DATE] [t/TAG...]`
 
 ****
-* Edits the expense at the specified `INDEX`. The index refers to the index number shown in the displayed expense list. The index *must be a positive integer* 1, 2, 3, ...
+*Examples:*
+
+* `edit 1 n/Stationery $/1.80 c/School` +
+ Edits the name and category of the 1st expense in the expense list to be `Stationery` and `school` respectively.
+* `edit 2 d/01-01-2018` +
+ Edits the date of the 2nd expense in the expense list to be the 1st of October, 2018.
+****
+
+[NOTE]
+====
 * At least one of the optional fields must be provided.
-* Existing values will be updated to the input values.
+* The index *must be a non-zero positive integer* and must correspond to an expense in the expense list.
+* COST should be a non-zero positive number with two decimal places
+* DATE should be in the format of "dd-mm-yyyy".
+====
+
+=== Deleting a expense : `delete`
+
+Deletes the expense at the specified `INDEX`. The `INDEX` refers to the index number shown in the displayed expense list
+next to the name of the expense. +
+
+Format: `delete INDEX`
+
+****
+*Examples:*
+
+* `delete 1` +
+ Deletes the 1st expense in the expense list from the expense tracker.
 ****
 
-Examples:
-
-* `edit 1 n/Stationary $/1.80 c/School` +
-Edits the name of the 1st expense to be `Stationary` and `school` respectively.
-* `edit 1 d/01-01-2018` +
-Edits the date of the 1st expense to be the 1st of October, 2018.
+[NOTE]
+====
+* The index *must be a non-zero positive integer* and must correspond to an expense in the expense list.
+====
 
 === Locating expenses by name: `find`
 
 Finds expense whose names contain any of the given keywords. +
-Format: `find KEYWORD [MORE_KEYWORDS]`
-
-****
-* The search is case insensitive. e.g `hans` will match `Hans`
-* The order of the keywords does not matter. e.g. `Hans Bo` will match `Bo Hans`
-* Only the name is searched.
-* Only full words will be matched e.g. `Han` will not match `Hans`
-* Expense matching at least one keyword will be returned (i.e. `OR` search).
-****
-
-
-=== Deleting a expense : `delete`
-
-Deletes the specified expense from the expense tracker. +
-Format: `delete INDEX`
-
-****
-* Deletes the expense at the specified `INDEX`.
-* The index refers to the index number shown in the displayed expense list.
-* The index *must be a positive integer* 1, 2, 3, ...
-****
+Format: `find [n/NAME] [c/CATEGORY] [$/COST:COST] [t/TAG] [d/DATE:DATE]`
 
 Examples:
 
-* `list` +
-`delete 2` +
-Deletes the 2nd expense from the expense tracker.
-* `find Betsy` +
-`delete 1` +
-Deletes the 1st expense from the expense tracker.
+* find c/School
+Find all the expenses under `School` category.
+* find c/Food  t/Lunch
+Find all the expenses with tag `Lunch` plus the expenses under `Food` category.
+* find d/1-10-2018:7-10-2018
+Find all the expenses from 1-10-2018 to 7-10-2018.
+* find $/10.00:20.00
+Find all the expenses with cost which is larger than or equals to 10.00 and smaller or equal to 20.
 
-=== Selecting a expense : `select`
+[NOTE]
+====
+* The search is case insensitive, i.e. the KEYWORD `hans` is equivalent to the KEYWORD `Hans`
+* The order of the keywords does not matter, i.e. the KEYWORD `hans bo` is equivalent to the KEYWORD `bo hans`
+* Only the expense name will be searched.
+* Only full words will be matched, i.e. the KEYWORD `Han` will not match the expense name `Hans`
+====
 
-Selects the expense identified by the index number used in the displayed expense list. +
-Format: `select INDEX`
+=== Listing all expenses : `list`
+
+Updates the expense list to show all expenses in the expense tracker.
+
+For example, this command can be used after the `find` command is used, as the `find` command will apply a filter to the expense list.
+
+Format: `list`
+
+//=== Selecting a expense : `select`
+//
+//Selects the expense identified by the index number used in the displayed expense list. +
+//Format: `select INDEX`
+//
+//****
+//* Selects the expense and loads the Google search page the expense at the specified `INDEX`.
+//* The index refers to the index number shown in the displayed expense list.
+//* The index *must be a positive integer* `1, 2, 3, ...`
+//****
+//
+//Examples:
+//
+//* `list` +
+//`select 2` +
+//Selects the 2nd expense in the expense tracker.
+//* `find Betsy` +
+//`select 1` +
+//Selects the 1st expense in the results of the `find` command.
+
+=== Setting a budget: `setBudget`
+Sets the budget for the expense tracker. +
+
+The Expense Tracker will warn you when your total expenditure exceeds the budget that is set.
+
+Format: `setBudget MONEY_WITH_TWO_DECIMAL_PLACES`
 
 ****
-* Selects the expense and loads the Google search page the expense at the specified `INDEX`.
-* The index refers to the index number shown in the displayed expense list.
-* The index *must be a positive integer* `1, 2, 3, ...`
+*Examples:*
+
+* `setBudget 2.00` +
+ Sets a budget of $2.00.
+* `setBudget 20.00` +
+ Sets a budget of $20.00.
 ****
 
-Examples:
+[NOTE]
+====
+* The `setBudget` command is case sensitive.
+* MONEY_WITH_TWO_DECIMAL_PLACES must be a positive number with two decimal places.
+====
 
-* `list` +
-`select 2` +
-Selects the 2nd expense in the expense tracker.
-* `find Betsy` +
-`select 1` +
-Selects the 1st expense in the results of the `find` command.
+=== Sets recurring frequency for budget: `setRecurringFrequency`
+Sets the recurrence frequency for the budget of the expense tracker.
+
+The expense tracker will reset your budget after every `FREQUENCY`
+
+Format: `setRecurringFrequency [hrs/HOURS] [min/MINUTES] [sec/SECONDS]`
+
+
+****
+*Examples:*
+
+* `setRecurringFrequency hrs/1` +
+    Sets the budget to reset every 1 hour
+* `setRecurringFrequency hrs/1 min/30` +
+    Sets the budget reset every 1 hour and 30 minutes
+****
+
+[NOTE]
+====
+* The `setRecurringFrequency` command is case sensitive.
+* HOURS/MINUTES/SECONDS must be a positive number.
+====
+
 
 === Listing entered commands : `history`
 
-Lists all the commands that you have entered in reverse chronological order. +
+Lists all the commands that you have previously entered in reverse chronological order. +
+
 Format: `history`
 
 [NOTE]
 ====
-Pressing the kbd:[&uarr;] and kbd:[&darr;] arrows will display the previous and next input respectively in the command box.
+Press the kbd:[&uarr;] and kbd:[&darr;] arrows to display the previous and next commands respectively in the command box.
 ====
 
 // tag::undoredo[]
 === Undoing previous command : `undo`
 
 Restores the expense tracker to the state before the previous _undoable_ command was executed. +
+_Undoable_ commands are commands that modify expenses in the expense tracker (`add`, `delete`, `edit` and `clear`). +
+
 Format: `undo`
 
-[NOTE]
-====
-Undoable commands: those commands that modify the expense tracker's content (`add`, `delete`, `edit` and `clear`).
-====
-
-Examples:
+****
+*Examples:*
 
 * `delete 1` +
 `list` +
-`undo` (reverses the `delete 1` command) +
+`undo` +
+Reverses the `delete 1` command.
 
-* `select 1` +
-`list` +
+* `list` +
 `undo` +
 The `undo` command fails as there are no undoable commands executed previously.
 
 * `delete 1` +
 `clear` +
-`undo` (reverses the `clear` command) +
-`undo` (reverses the `delete 1` command) +
+`undo` +
+`undo` +
+The first `undo` reverses the `clear` command. The second `undo` reverses the `delete 1` command.
+****
 
 === Redoing the previously undone command : `redo`
 
-Reverses the most recent `undo` command. +
+Restores the expense tracker to the state before the most recent `undo` command. +
+
 Format: `redo`
 
-Examples:
+****
+*Examples:*
 
 * `delete 1` +
-`undo` (reverses the `delete 1` command) +
-`redo` (reapplies the `delete 1` command) +
+`undo` +
+`redo` +
+The `undo` command reverses the `delete 1` command. +
+The `redo` command reverses the `undo` command.
 
 * `delete 1` +
 `redo` +
-The `redo` command fails as there are no `undo` commands executed previously.
+The `redo` command fails as there was no `undo` command executed previously.
 
 * `delete 1` +
 `clear` +
-`undo` (reverses the `clear` command) +
-`undo` (reverses the `delete 1` command) +
+`undo`
+`undo`
 `redo` (reapplies the `delete 1` command) +
 `redo` (reapplies the `clear` command) +
+The first `undo` reverses the `clear` command. +
+The second `undo` reverses the `delete 1` command. +
+The first `redo` reverses the second `undo` command, reapplying `delete 1`.
+The second`redo` reverses the first `undo` command, reapplying `clear`.
+****
 // end::undoredo[]
 
 === Show expense statistics: `stats`
 
-Opens up a new window showing a bar chart of the expenditure of the past week. +
-Format: `stats`
+Shows the user the bar chart of the expenditure over a specified time period, in a given `MODE`. +
+
+The available modes are `d` and `m`, which represents day and month respectively. E.g. if NUMBER_OF_DAYS_OR_MONTHS is 7
+and MODE is 'd', the statistics will include data from the past 7 days, current day included.
+
+Format: `stats n/NUMBER_OF_DAYS_OR_MONTHS m/MODE`
+
+****
+*Examples:*
+
+* `stats n/14 m/d` +
+Shows the expense statistics for the past 14 days, current day included +
+
+* `stats n/3 m/m` +
+Shows the expense statistics for the past 3 months, current day included +
+****
+
+[NOTE]
+====
+* NUMBER_OF_DAYS_OR_MONTHS must be a positive number greater than 0
+* MODE can only be 'd' or 'm'.
+* If no parameters are provided, the command defaults to show statistics for the past 7 days, current day included.
+====
 
 === Clearing all entries : `clear`
 
-Clears all entries from the expense tracker. +
+Deletes all expense entries from the expense tracker. +
+
 Format: `clear`
 
 === Exiting the program : `exit`
 
 Exits the program. +
+
 Format: `exit`
 
-=== Saving the data
-
-Expense tracker data are saved in the hard disk automatically after any command that changes the data. +
-There is no need to save manually.
-
-
 == FAQ
+
+*Q*: Do I need to manually save my data? +
+*A*: There is no need to save your manually. All the data in the Expense Tracker is automatically saved in the hard disk after any command that changes the data. +
+
 
 *Q*: How do I transfer my data to another Computer? +
 *A*:  Install the app in the other computer and copy the `data` folder in your previous Expense Tracker folder over to the new Expense Tracker folder on your other Computer.
 
 == Command Summary
 
-* *Login* : `login USERNAME`
-* *SignUp* : `signup USERNAME`
+This is a summary of the commands available in the Expense Tracker:
+
+* *SignUp* : `signup USERNAME` +
+e.g. `signup username123`
+* *Login* : `login u/USERNAME [p/PASSWORD]` +
+e.g. `login u/username123 p/password1`
+* *Set Password* : `setpassword n/NEW_PASSWORD [o/OLD_PASSWORD]` +
+e.g. `setpassword n/pass1 o/passold`
+* *Help* : `help`
 * *Add* `add n/EXPENSE_NAME e/EXPENSE [c/CATEGORY]` +
 e.g. `add n/Lunch e/4 c/Food`
-* *Clear* : `clear`
-* *Delete* : `delete INDEX` +
-e.g. `delete 3`
 * *Edit* : `edit INDEX n/EXPENSE_NAME e/EXPENSE [c/CATEGORY]` +
 e.g. `edit 2 n/Lunch e/4 c/Food`
+* *Delete* : `delete INDEX` +
+e.g. `delete 3`
 * *Find* : `find KEYWORD [MORE_KEYWORDS]` +
-e.g. `find school`
 * *List* : `list`
-* *Help* : `help`
-* *Select* : `select INDEX` +
-e.g.`select 2`
+e.g. `find school`
+//* *Select* : `select INDEX` +
+//e.g.`select 2`
+* *Set Budget* : `setBudget` +
+e.g. `setBudget 20.00`
 * *History* : `history`
 * *Undo* : `undo`
 * *Redo* : `redo`
-* *Statistics* : `stats`
+* *Statistics* : `stats n/NUMBER_OF_DAYS_OR_MONTHS m/MODE`
+* *Clear* : `clear`
+* *Exit* : `exit`

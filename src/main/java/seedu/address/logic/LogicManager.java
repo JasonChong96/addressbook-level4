@@ -1,5 +1,7 @@
 package seedu.address.logic;
 
+import java.text.SimpleDateFormat;
+
 import java.util.LinkedHashMap;
 import java.util.logging.Logger;
 
@@ -8,10 +10,12 @@ import seedu.address.commons.core.ComponentManager;
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.logic.commands.Command;
 import seedu.address.logic.commands.CommandResult;
+import seedu.address.logic.commands.StatsCommand.StatsMode;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.parser.AddressBookParser;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.Model;
+import seedu.address.model.budget.Budget;
 import seedu.address.model.exceptions.NoUserSelectedException;
 import seedu.address.model.exceptions.NonExistentUserException;
 import seedu.address.model.exceptions.UserAlreadyExistsException;
@@ -50,26 +54,51 @@ public class LogicManager extends ComponentManager implements Logic {
         return model.getFilteredExpenseList();
     }
 
+    //@@author winsonhys
+    @Override
+    public Budget getMaximumBudget() {
+        return model.getMaximumBudget();
+    }
+
     //@@author jonathantjm
+
+    /**
+     * Returns a LinkedHashMap containing data for the bar chart, where the key is the x-axis and the value is the
+     * y-axis.
+     * @return LinkedHashMap of String key and Double value
+     * @throws NoUserSelectedException
+     */
     public LinkedHashMap<String, Double> getExpenseStats() throws NoUserSelectedException {
         ObservableList<Expense> expenseList = model.getExpenseStats();
+        StatsMode statsMode = model.getStatsMode();
         LinkedHashMap<String, Double> stats = new LinkedHashMap<>();
         for (Expense e : expenseList) {
-            if (stats.containsKey(e.getDate().toString())) {
+            String period;
+            if (statsMode == statsMode.DAY) {
+                period = e.getDate().toString();
+            } else {
+                period = new SimpleDateFormat("MMM-YYYY").format(e.getDate().fullDate.getTime());
+            }
+
+            if (stats.containsKey(period)) {
                 stats.put(
-                    e.getDate().toString(),
-                    stats.get(e.getDate().toString()) + Double.parseDouble(e.getCost().value)
+                        period,
+                        stats.get(period) + e.getCost().getCostValue()
                 );
             } else {
-                stats.put(e.getDate().toString(), Double.parseDouble(e.getCost().value));
+                stats.put(period, e.getCost().getCostValue());
             }
         }
         return stats;
     }
 
+
     //@@author
-    @Override
     public ListElementPointer getHistorySnapshot() {
         return new ListElementPointer(history.getHistory());
+    }
+
+    public StatsMode getStatsMode() {
+        return model.getStatsMode();
     }
 }

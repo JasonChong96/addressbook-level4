@@ -1,6 +1,7 @@
 package seedu.address.model.util;
 
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -27,22 +28,22 @@ public class SampleDataUtil {
                 new Cost("2.00"),
                 getTagSet("colleagues", "friends")),
             new Expense(new Name("Charlotte Oliveiro"), new Category("Entertainment"),
-                new Cost("3.50"), new Date("01-10-2018"),
+                new Cost("3.50"), new Date("01-09-2018"),
                 getTagSet("neighbours")),
             new Expense(new Name("David Li"), new Category("Shopping"),
-                new Cost("4.00"), new Date("01-10-2018"),
+                new Cost("4.00"), new Date("01-08-2018"),
                 getTagSet("family")),
             new Expense(new Name("Irfan Ibrahim"), new Category("Tax"),
-                new Cost("9.00"), new Date("01-09-2018"),
+                new Cost("9.00"), new Date("5-08-2018"),
                 getTagSet("classmates")),
             new Expense(new Name("Roy Balakrishnan"), new Category("Book"),
-                new Cost("10.00"), new Date("01-09-2018"),
+                new Cost("10.00"), new Date("4-07-2018"),
                 getTagSet("colleagues"))
         };
     }
 
     public static ReadOnlyAddressBook getSampleAddressBook() {
-        AddressBook sampleAb = new AddressBook(new Username("sample"));
+        AddressBook sampleAb = new AddressBook(new Username("sample"), Optional.empty());
         for (Expense sampleExpense : getSampleExpenses()) {
             sampleAb.addExpense(sampleExpense);
         }

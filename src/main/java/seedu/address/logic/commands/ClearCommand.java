@@ -2,6 +2,8 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 
+import seedu.address.commons.core.EventsCenter;
+import seedu.address.commons.events.ui.UpdateBudgetPanelEvent;
 import seedu.address.logic.CommandHistory;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
@@ -21,12 +23,14 @@ public class ClearCommand extends Command {
     @Override
     public CommandResult execute(Model model, CommandHistory history) throws NoUserSelectedException {
         requireNonNull(model);
-        AddressBook newAddressBook = new AddressBook(model.getAddressBook().getUsername());
+        AddressBook newAddressBook =
+                new AddressBook(model.getAddressBook().getUsername(), model.getAddressBook().getPassword());
         Budget clearedSpendingBudget = model.getMaximumBudget();
         model.resetData(newAddressBook);
         clearedSpendingBudget.clearSpending();
         model.modifyMaximumBudget(clearedSpendingBudget);
         model.commitAddressBook();
+        EventsCenter.getInstance().post(new UpdateBudgetPanelEvent(model.getMaximumBudget()));
         return new CommandResult(MESSAGE_SUCCESS);
     }
 }

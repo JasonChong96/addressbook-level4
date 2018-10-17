@@ -4,7 +4,12 @@ package seedu.address.model.budget;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.AppUtil.checkArgument;
 
+import java.time.LocalDateTime;
+import java.util.logging.Logger;
+
+import seedu.address.commons.core.LogsCenter;
 import seedu.address.model.expense.Expense;
+import seedu.address.storage.StorageManager;
 
 
 /**
@@ -15,10 +20,18 @@ public class Budget {
     public static final String MESSAGE_BUDGET_CONSTRAINTS =
         "Cost should only take values in the following format: {int}.{digit}{digit}";
 
+    public static final String MESSAGE_NEXT_MONTH = String.format("It is the end of the month. Please set a new "
+        + "budget");
+
     public static final String BUDGET_VALIDATION_REGEX = "(\\d+).(\\d)(\\d)";
+
+    private static final Logger logger = LogsCenter.getLogger(StorageManager.class);
+
 
     private double budgetCap;
     private double currentExpenses;
+    private LocalDateTime nextRecurrence;
+    private long numberOfSecondsToRecurAgain;
 
 
 
@@ -31,7 +44,24 @@ public class Budget {
         requireNonNull(budget);
         checkArgument(isValidBudget(budget), BUDGET_VALIDATION_REGEX);
         this.budgetCap = Double.parseDouble(budget);
+        this.nextRecurrence = null;
+        this.numberOfSecondsToRecurAgain = 50000;
         this.currentExpenses = 0.0;
+    }
+
+    /**
+     * Constructs a {@code Budget} with modified current expenses and recurrence
+     * @param budget
+     * @param currentExpenses
+     * @param nextRecurrence
+     * @param numberOfSecondsToRecurAgain
+     */
+    public Budget(double budget, double currentExpenses, LocalDateTime nextRecurrence,
+                  long numberOfSecondsToRecurAgain) {
+        this.budgetCap = budget;
+        this.currentExpenses = currentExpenses;
+        this.nextRecurrence = nextRecurrence;
+        this.numberOfSecondsToRecurAgain = numberOfSecondsToRecurAgain;
     }
 
     /**
@@ -42,6 +72,8 @@ public class Budget {
     public Budget(double budget, double currentExpenses) {
         this.budgetCap = budget;
         this.currentExpenses = currentExpenses;
+        this.nextRecurrence = null;
+        this.numberOfSecondsToRecurAgain = 50000;
 
     }
 
@@ -63,10 +95,14 @@ public class Budget {
     }
 
     /**
-     * Returns the most recent timestamp in which the budget is modified/created
+     * Returns the current date in which the budget is created
      *
-     * @return a Calendar object that consists of the most recent timestamp.
+     * @return a LocalDate object that consists of the most recent timestamp.
      */
+
+    public LocalDateTime getNextRecurrence() {
+        return this.nextRecurrence;
+    }
 
     /**
      * Attemps to add expense
@@ -77,6 +113,18 @@ public class Budget {
     public boolean addExpense(double expense) {
         this.currentExpenses += expense;
         return this.currentExpenses <= this.budgetCap;
+    }
+
+
+    /**
+     * Sets the recurrence frequency
+     * @param seconds Number of seconds to recur again
+     */
+    public void setRecurrenceFrequency(long seconds) {
+        this.numberOfSecondsToRecurAgain = seconds;
+        if (this.nextRecurrence == null) {
+            this.nextRecurrence = LocalDateTime.now().plusSeconds(seconds);
+        }
     }
 
     public void removeExpense(Expense expense) {
@@ -108,15 +156,38 @@ public class Budget {
         return this.currentExpenses;
     }
 
+    public long getNumberOfSecondsToRecurAgain() {
+        return this.numberOfSecondsToRecurAgain;
+    }
+
     @Override
     public boolean equals(Object budget) {
         Budget anotherBudget = (Budget) budget;
         return this.currentExpenses == anotherBudget.currentExpenses
-            && this.budgetCap == anotherBudget.budgetCap;
+            && this.budgetCap == anotherBudget.budgetCap
+            && this.numberOfSecondsToRecurAgain == anotherBudget.numberOfSecondsToRecurAgain;
     }
 
     @Override
     public String toString() {
         return String.format("$%f", this.budgetCap);
+    }
+
+    /**
+     * Updates the current budget with the new budget if it is the start of a new month. Does nothing if not
+     */
+    public void checkBudgetRestart() {
+        if (this.nextRecurrence == null) {
+            //TODO: Notifies user that budget recurrence has not been set
+            logger.info("Recurrence has not been set");
+            return;
+        }
+        if (LocalDateTime.now().isAfter(this.nextRecurrence)) {
+            this.nextRecurrence = LocalDateTime.now().plusSeconds(this.numberOfSecondsToRecurAgain);
+            this.clearSpending();
+            //TODO: Notifies user that budget has been restarted
+            logger.info("Budget has been restarted");
+        }
+
     }
 }

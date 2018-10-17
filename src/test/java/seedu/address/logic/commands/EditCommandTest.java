@@ -5,8 +5,8 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.DESC_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_CATEGORY_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_CATEGORY_IPHONE;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_IPHONE;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
@@ -57,11 +57,11 @@ public class EditCommandTest {
         Expense lastExpense = model.getFilteredExpenseList().get(indexLastExpense.getZeroBased());
 
         ExpenseBuilder expenseInList = new ExpenseBuilder(lastExpense);
-        Expense editedExpense = expenseInList.withName(VALID_NAME_BOB).withCategory(VALID_CATEGORY_BOB)
+        Expense editedExpense = expenseInList.withName(VALID_NAME_IPHONE).withCategory(VALID_CATEGORY_IPHONE)
                 .withTags(VALID_TAG_HUSBAND).build();
 
-        EditCommand.EditExpenseDescriptor descriptor = new EditExpenseDescriptorBuilder().withName(VALID_NAME_BOB)
-                .withCategory(VALID_CATEGORY_BOB).withTags(VALID_TAG_HUSBAND).build();
+        EditCommand.EditExpenseDescriptor descriptor = new EditExpenseDescriptorBuilder().withName(VALID_NAME_IPHONE)
+                .withCategory(VALID_CATEGORY_IPHONE).withTags(VALID_TAG_HUSBAND).build();
         EditCommand editCommand = new EditCommand(indexLastExpense, descriptor);
 
         String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_EXPENSE_SUCCESS, editedExpense);
@@ -91,9 +91,9 @@ public class EditCommandTest {
         showExpenseAtIndex(model, INDEX_FIRST_EXPENSE);
 
         Expense expenseInFilteredList = model.getFilteredExpenseList().get(INDEX_FIRST_EXPENSE.getZeroBased());
-        Expense editedExpense = new ExpenseBuilder(expenseInFilteredList).withName(VALID_NAME_BOB).build();
+        Expense editedExpense = new ExpenseBuilder(expenseInFilteredList).withName(VALID_NAME_IPHONE).build();
         EditCommand editCommand = new EditCommand(INDEX_FIRST_EXPENSE,
-                new EditExpenseDescriptorBuilder().withName(VALID_NAME_BOB).build());
+                new EditExpenseDescriptorBuilder().withName(VALID_NAME_IPHONE).build());
 
         String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_EXPENSE_SUCCESS, editedExpense);
 
@@ -128,7 +128,7 @@ public class EditCommandTest {
     public void execute_invalidExpenseIndexUnfilteredList_failure() throws NoUserSelectedException {
         Index outOfBoundIndex = Index.fromOneBased(model.getFilteredExpenseList().size() + 1);
         EditCommand.EditExpenseDescriptor descriptor =
-                new EditExpenseDescriptorBuilder().withName(VALID_NAME_BOB).build();
+                new EditExpenseDescriptorBuilder().withName(VALID_NAME_IPHONE).build();
         EditCommand editCommand = new EditCommand(outOfBoundIndex, descriptor);
 
         assertCommandFailure(editCommand, model, commandHistory, Messages.MESSAGE_INVALID_EXPENSE_DISPLAYED_INDEX);
@@ -146,7 +146,7 @@ public class EditCommandTest {
         assertTrue(outOfBoundIndex.getZeroBased() < model.getAddressBook().getExpenseList().size());
 
         EditCommand editCommand = new EditCommand(outOfBoundIndex,
-                new EditExpenseDescriptorBuilder().withName(VALID_NAME_BOB).build());
+                new EditExpenseDescriptorBuilder().withName(VALID_NAME_IPHONE).build());
 
         assertCommandFailure(editCommand, model, commandHistory, Messages.MESSAGE_INVALID_EXPENSE_DISPLAYED_INDEX);
     }
@@ -177,7 +177,7 @@ public class EditCommandTest {
     public void executeUndoRedo_invalidIndexUnfilteredList_failure() throws NoUserSelectedException {
         Index outOfBoundIndex = Index.fromOneBased(model.getFilteredExpenseList().size() + 1);
         EditCommand.EditExpenseDescriptor descriptor =
-                new EditExpenseDescriptorBuilder().withName(VALID_NAME_BOB).build();
+                new EditExpenseDescriptorBuilder().withName(VALID_NAME_IPHONE).build();
         EditCommand editCommand = new EditCommand(outOfBoundIndex, descriptor);
 
         // execution failed -> address book state not added into model

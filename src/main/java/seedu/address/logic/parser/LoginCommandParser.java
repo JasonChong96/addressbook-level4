@@ -1,6 +1,11 @@
 package seedu.address.logic.parser;
 
 import static seedu.address.commons.core.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_PASSWORD;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_USERNAME;
+import static seedu.address.logic.parser.ParserUtil.arePrefixesPresent;
+
+import java.util.Optional;
 
 import seedu.address.logic.commands.LoginCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
@@ -20,11 +25,18 @@ public class LoginCommandParser implements Parser<LoginCommand> {
      */
     @Override
     public LoginCommand parse(String userInput) throws ParseException {
-        try {
-            Username username = new Username(userInput.trim());
-            return new LoginCommand(username);
-        } catch (IllegalArgumentException iae) {
+        ArgumentMultimap argMultimap =
+                ArgumentTokenizer.tokenize(userInput, PREFIX_USERNAME, PREFIX_PASSWORD);
+        if (!arePrefixesPresent(argMultimap, PREFIX_USERNAME)
+                || !argMultimap.getPreamble().isEmpty()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, LoginCommand.MESSAGE_USAGE));
+        }
+        Username username = ParserUtil.parseUsername(argMultimap.getValue(PREFIX_USERNAME).get());
+        Optional<String> plainPassword = argMultimap.getValue(PREFIX_PASSWORD);
+        if (plainPassword.isPresent()) {
+            return new LoginCommand(username, ParserUtil.parsePassword(plainPassword.get()));
+        } else {
+            return new LoginCommand(username, null);
         }
     }
 }

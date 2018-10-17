@@ -1,7 +1,7 @@
 package systemtests;
 
 import static seedu.address.commons.core.Messages.MESSAGE_UNKNOWN_COMMAND;
-import static seedu.address.testutil.TypicalExpenses.KEYWORD_MATCHING_MEIER;
+import static seedu.address.testutil.TypicalExpenses.KEYWORD_MATCHING_BUY;
 
 import org.junit.Test;
 
@@ -15,12 +15,13 @@ import seedu.address.model.exceptions.NonExistentUserException;
 import seedu.address.model.exceptions.UserAlreadyExistsException;
 import seedu.address.testutil.ModelUtil;
 
+
 public class ClearCommandSystemTest extends AddressBookSystemTest {
 
     @Test
     public void clear() throws NoUserSelectedException, UserAlreadyExistsException, NonExistentUserException {
         final Model defaultModel = getModel();
-
+        showAllExpenses();
         /* Case: clear non-empty address book, command with leading spaces and trailing alphanumeric characters and
          * spaces -> cleared
          */
@@ -47,7 +48,7 @@ public class ClearCommandSystemTest extends AddressBookSystemTest {
 
         /* Case: filters the expense list before clearing -> entire address book cleared */
         executeCommand(UndoCommand.COMMAND_WORD); // restores the original address book
-        showExpensesWithName(KEYWORD_MATCHING_MEIER);
+        showExpensesWithName(KEYWORD_MATCHING_BUY);
         assertCommandSuccess(ClearCommand.COMMAND_WORD);
         assertSelectedCardUnchanged();
 

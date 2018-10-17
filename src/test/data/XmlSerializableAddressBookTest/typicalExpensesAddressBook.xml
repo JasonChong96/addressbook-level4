@@ -2,54 +2,56 @@
 <!-- AddressBook save file which contains the same Expense values as in TypicalExpenses#getTypicalAddressBook() -->
 <addressbook>
     <expenses>
-        <name>Alice Pauline</name>
+        <name>School fee</name>
         <category>School</category>
         <cost>3.00</cost>
-		<date>01-10-2018</date>
+		<date>02-10-2018</date>
         <tagged>friends</tagged>
     </expenses>
     <expenses>
-        <name>Benson Meier</name>
+        <name>Eat ice cream</name>
         <category>Food</category>
         <cost>2.00</cost>
-		<date>01-10-2018</date>
+		<date>02-10-2018</date>
         <tagged>owesMoney</tagged>
         <tagged>friends</tagged>
     </expenses>
     <expenses>
-        <name>Carl Kurz</name>
+        <name>Buy toy</name>
         <category>Entertainment</category>
         <cost>1.00</cost>
-		<date>01-10-2018</date>
+		<date>03-10-2018</date>
     </expenses>
     <expenses>
-        <name>Daniel Meier</name>
+        <name>New clothes</name>
         <category>Shopping</category>
         <cost>2.00</cost>
-		<date>01-10-2018</date>
+		<date>04-10-2018</date>
         <tagged>friends</tagged>
     </expenses>
     <expenses>
-        <name>Elle Meyer</name>
+        <name>Pay tax</name>
         <category>Tax</category>
         <cost>5.00</cost>
-		<date>01-10-2018</date>
+		<date>05-10-2018</date>
     </expenses>
     <expenses>
-        <name>Fiona Kunz</name>
+        <name>Buy books</name>
         <category>Book</category>
         <cost>6.00</cost>
-		<date>01-10-2018</date>
+		<date>06-10-2018</date>
     </expenses>
     <expenses>
-        <name>George Best</name>
-        <category>Fine</category>
+        <name>Have lunch</name>
+        <category>Food</category>
         <cost>7.00</cost>
-		<date>01-10-2018</date>
+		<date>02-10-2018</date>
     </expenses>
     <username>typicalExpensesAddressBook</username>
     <budget>
         <budgetCap>28.00</budgetCap>
         <currentExpenses>26.00</currentExpenses>
+        <nextRecurrence>2017-08-04T10:11:30</nextRecurrence>
+        <numberOfSecondsToRecurAgain>50000</numberOfSecondsToRecurAgain>
     </budget>
 </addressbook>

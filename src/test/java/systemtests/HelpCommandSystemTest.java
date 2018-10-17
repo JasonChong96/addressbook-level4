@@ -29,6 +29,7 @@ public class HelpCommandSystemTest extends AddressBookSystemTest {
 
     @Test
     public void openHelpWindow() throws NoUserSelectedException {
+        showAllExpenses();
         //use accelerator
         getCommandBox().click();
         getMainMenu().openHelpWindowUsingAccelerator();

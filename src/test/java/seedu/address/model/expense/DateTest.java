@@ -83,4 +83,12 @@ public class DateTest {
         assertTrue(testDate.equals(testDate));
         assertTrue(testDate.equals(new Date("02-10-2018")));
     }
+
+    @Test
+    public void compare() {
+        Date date1 = new Date ("2-10-2018");
+        assertTrue(Date.compare(date1, new Date ("3-10-2018")) == 1);
+        assertTrue(Date.compare(date1, new Date ("2-10-2018")) == 0);
+        assertTrue(Date.compare(date1, new Date ("1-10-2018")) == -1);
+    }
 }

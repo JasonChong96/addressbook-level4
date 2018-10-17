@@ -5,6 +5,7 @@ import static java.util.Objects.requireNonNull;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.StringUtil;
@@ -14,6 +15,8 @@ import seedu.address.model.expense.Cost;
 import seedu.address.model.expense.Date;
 import seedu.address.model.expense.Name;
 import seedu.address.model.tag.Tag;
+import seedu.address.model.user.Password;
+import seedu.address.model.user.Username;
 
 /**
  * Contains utility methods used for parsing strings in the various *Parser classes.
@@ -75,7 +78,7 @@ public class ParserUtil {
         requireNonNull(address);
         String trimmedAddress = address.trim();
         if (!Cost.isValidCost(trimmedAddress)) {
-            throw new ParseException(Cost.MESSAGE_ADDRESS_CONSTRAINTS);
+            throw new ParseException(Cost.MESSAGE_COST_CONSTRAINTS);
         }
         return new Cost(trimmedAddress);
     }
@@ -112,6 +115,88 @@ public class ParserUtil {
     }
 
     /**
+     * Parses a {@code String Username} into a {@code Username}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code Username} is invalid.
+     */
+    public static Username parseUsername(String username) throws ParseException {
+        requireNonNull(username);
+        String trimmedUsername = username.trim();
+        if (!Username.isValidName(trimmedUsername)) {
+            throw new ParseException(Username.MESSAGE_NAME_CONSTRAINTS);
+        }
+        return new Username(trimmedUsername);
+    }
+
+    /**
+     * Parses a {@code String password} into a {@code Password}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code Password} is invalid.
+     */
+    public static Password parsePassword(String password) throws ParseException {
+        requireNonNull(password);
+        String trimmedPassword = password.trim();
+        if (!Password.isValidPassword(trimmedPassword)) {
+            throw new ParseException(Password.MESSAGE_PASSWORD_CONSTRAINTS);
+        }
+        return new Password(trimmedPassword, true);
+    }
+
+    /**
+     * Parses a {@code String hours} into seconds
+     * @param hours Number of hours
+     * @return Number of hours in seconds in long type
+     * @throws IllegalArgumentException
+     */
+    public static long parseHours(String hours) throws IllegalArgumentException {
+        if (hours == null) {
+            return 0;
+        }
+        long returnHours = Long.parseLong(hours) * 60 * 60;
+        if (returnHours < 0) {
+            throw new IllegalArgumentException("Number of hours must be more than 0");
+        }
+        return returnHours;
+    }
+
+    /**
+     * Parses a {@code String minutes} into seconds
+     * @param minutes Number of minutes
+     * @return Number of minutes in seconds in long type
+     * @throws IllegalArgumentException
+     */
+
+    public static long parseMinutes(String minutes) {
+        if (minutes == null) {
+            return 0;
+        }
+        long returnMinutes = Long.parseLong(minutes) * 60;
+        if (returnMinutes < 0) {
+            throw new IllegalArgumentException("Number of minutes must be more than 0");
+        }
+        return returnMinutes;
+    }
+
+    /**
+     * Parses a {@code String seconds} into seconds
+     * @param seconds Number of seconds
+     * @return Number of seconds in long type
+     * @throws ParseException
+     */
+    public static long parseSeconds(String seconds) throws IllegalArgumentException {
+        if (seconds == null) {
+            return 0;
+        }
+        long returnSeconds = Long.parseLong(seconds);
+        if (returnSeconds < 0) {
+            throw new IllegalArgumentException("Number of minutes must be more than 0");
+        }
+        return returnSeconds;
+    }
+
+    /**
      * Parses {@code Collection<String> tags} into a {@code Set<Tag>}.
      */
     public static Set<Tag> parseTags(Collection<String> tags) throws ParseException {
@@ -121,5 +206,13 @@ public class ParserUtil {
             tagSet.add(parseTag(tagName));
         }
         return tagSet;
+    }
+
+    /**
+     * Returns true if none of the prefixes contains empty {@code Optional} values in the given
+     * {@code ArgumentMultimap}.
+     */
+    public static boolean arePrefixesPresent(ArgumentMultimap argumentMultimap, Prefix... prefixes) {
+        return Stream.of(prefixes).allMatch(prefix -> argumentMultimap.getValue(prefix).isPresent());
     }
 }

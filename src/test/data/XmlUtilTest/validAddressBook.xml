@@ -58,5 +58,7 @@
     <budget>
         <budgetCap>28.00</budgetCap>
         <currentExpenses>26.00</currentExpenses>
+        <nextRecurrence>2018-10-10T10:11:30</nextRecurrence>
+        <numberOfSecondsToRecurAgain>50000</numberOfSecondsToRecurAgain>
     </budget>
 </addressbook>

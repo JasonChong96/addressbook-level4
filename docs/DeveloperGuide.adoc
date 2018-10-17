@@ -18,9 +18,15 @@ By: `Team SE-EDU`      Since: `Jun 2016`      Licence: `MIT`
 
 == Setting up
 
+'''
+Follow the guide in this section below to start development on ExpenseTracker
+
+'''
+
 === Prerequisites
 
-. *JDK `9`* or later
+. *https://www.oracle.com/technetwork/java/javase/downloads/java-archive-javase9-3934878.html[JDK `9`]* or later
+
 +
 [WARNING]
 JDK `10` on Windows will fail to run tests in <<UsingGradle#Running-Tests, headless mode>> due to a https://github.com/javafxports/openjdk-jfx/issues/66[JavaFX bug].
@@ -34,12 +40,16 @@ Do not disable them. If you have disabled them, go to `File` > `Settings` > `Plu
 
 
 === Setting up the project in your computer
+*To set up the project:*
 
-. Fork this repo, and clone the fork to your computer
-. Open IntelliJ (if you are not in the welcome screen, click `File` > `Close Project` to close the existing project dialog first)
-. Set up the correct JDK version for Gradle
-.. Click `Configure` > `Project Defaults` > `Project Structure`
-.. Click `New...` and find the directory of the JDK
+. Fork this repo and clone the fork to your computer
+. Open IntelliJ (if you are not in the https://i.stack.imgur.com/cQnLl.png[welcome screen], click `File` > `Close
+Project` to close
+ the
+existing project dialog first)
+
+. Click `Configure` > `Project Defaults` > `Project Structure`
+. Click `New...` and find the directory of the JDK
 . Click `Import Project`
 . Locate the `build.gradle` file and select it. Click `OK`
 . Click `Open as Project`
@@ -48,15 +58,19 @@ Do not disable them. If you have disabled them, go to `File` > `Settings` > `Plu
 This will generate all resources required by the application and tests.
 
 === Verifying the setup
+*To verify that you have successfully set up the project:*
 
 . Run the `seedu.address.MainApp` and try a few commands
-. <<Testing,Run the tests>> to ensure they all pass.
+. <<Testing,Run the tests>> and ensure that they all pass.
 
-=== Configurations to do before writing code
+=== Configurations to apply before writing code
+
+*The following lists configurations that should be applied before writing code:*
 
 ==== Configuring the coding style
 
-This project follows https://github.com/oss-generic/process/blob/master/docs/CodingStandards.adoc[oss-generic coding standards]. IntelliJ's default style is mostly compliant with ours but it uses a different import order from ours. To rectify,
+This project follows https://github.com/oss-generic/process/blob/master/docs/CodingStandards.adoc[oss-generic coding
+standards]. IntelliJ's default style is mostly compliant but it uses a different import order from ours. To rectify:
 
 . Go to `File` > `Settings...` (Windows/Linux), or `IntelliJ IDEA` > `Preferences...` (macOS)
 . Select `Editor` > `Code Style` > `Java`
@@ -69,9 +83,11 @@ Optionally, you can follow the <<UsingCheckstyle#, UsingCheckstyle.adoc>> docume
 
 ==== Updating documentation to match your fork
 
-After forking the repo, the documentation will still have the SE-EDU branding and refer to the `se-edu/addressbook-level4` repo.
+After forking the repo, the documentation will still have the SE-EDU branding, referencing the
+`se-edu/addressbook-level4`
+repo.
 
-If you plan to develop this fork as a separate product (i.e. instead of contributing to `se-edu/addressbook-level4`), you should do the following:
+If you plan to develop this fork as a separate product (instead of contributing to `se-edu/addressbook-level4`), you should do the following:
 
 . Configure the <<Docs-SiteWideDocSettings, site-wide documentation settings>> in link:{repoURL}/build.gradle[`build.gradle`], such as the `site-name`, to suit your own project.
 
@@ -81,7 +97,8 @@ If you plan to develop this fork as a separate product (i.e. instead of contribu
 
 Set up Travis to perform Continuous Integration (CI) for your fork. See <<UsingTravis#, UsingTravis.adoc>> to learn how to set it up.
 
-After setting up Travis, you can optionally set up coverage reporting for your team fork (see <<UsingCoveralls#, UsingCoveralls.adoc>>).
+After setting up Travis, you can optionally set up coverage reporting for your team's fork (see <<UsingCoveralls#,
+UsingCoveralls.adoc>>).
 
 [NOTE]
 Coverage reporting could be useful for a team repository that hosts the final version but it is not that useful for your personal fork.
@@ -91,9 +108,9 @@ Optionally, you can set up AppVeyor as a second CI (see <<UsingAppVeyor#, UsingA
 [NOTE]
 Having both Travis and AppVeyor ensures your App works on both Unix-based platforms and Windows-based platforms (Travis is Unix-based and AppVeyor is Windows-based)
 
-==== Getting started with coding
+=== Before coding
 
-When you are ready to start coding,
+*Before you start coding,*
 
 1. Get some sense of the overall design by reading <<Design-Architecture>>.
 2. Take a look at <<GetStartedProgramming>>.
@@ -201,21 +218,24 @@ image::DeletePersonSdForLogic.png[width="800"]
 === Model component
 
 .Structure of the Model Component
-image::ModelClassDiagram.png[width="800"]
+image::UpdatedModelComponentClassDiagram.png[width="800"]
 
 *API* : link:{repoURL}/src/main/java/seedu/address/model/Model.java[`Model.java`]
 
-The `Model`,
+The `ModelManager` which implements the interface `Model` (Figure 8):
 
 * stores a `UserPref` object that represents the user's preferences.
-* stores the Expense Tracker data.
+* stores the a list of expenses.
 * exposes an unmodifiable `ObservableList<Expense>` that can be 'observed' e.g. the UI can be bound to this list so that the UI automatically updates when the data in the list change.
 * does not depend on any of the other three components.
 
 [NOTE]
-As a more OOP model, we can store a `Tag` list in `Expense Tracker`, which `Expense` can reference. This would allow `Expense Tracker` to only require one `Tag` object per unique `Tag`, instead of each `Expense` needing their own `Tag` object. An example of how such a model may look like is given below. +
+To better adhere to the paradigms of OOP, we can store a `Tag` list in `Expense Tracker`, which `Expense` can
+reference. This
+would allow `Expense
+Tracker` to only require one `Tag` object per unique `Tag`, instead of each `Expense` needing their own `Tag` object. An example of how such a model may look like is given below. +
  +
-image:ModelClassBetterOopDiagram.png[width="800"]
+image:BetterOopModelComponentClassDiagram.png[width="800"]
 
 [[Design-Storage]]
 === Storage component
@@ -223,12 +243,16 @@ image:ModelClassBetterOopDiagram.png[width="800"]
 .Structure of the Storage Component
 image::StorageClassDiagram.png[width="800"]
 
+The *_Structure of the Storage Component_* given above shows the relationships between classes in the storage component.
+
 *API* : link:{repoURL}/src/main/java/seedu/address/storage/Storage.java[`Storage.java`]
 
 The `Storage` component,
 
 * can save `UserPref` objects in json format and read it back.
 * can save the Expense Tracker data in xml format and read it back.
+* can read multiple xml format files with separate Expense Tracker data from a folder.
+* XmlAdaptedPassword is stored as a SHA-256 hash of the original password.
 
 [[Design-Commons]]
 === Common classes
@@ -319,12 +343,231 @@ image::UndoRedoActivityDiagram.png[width="650"]
 ** Cons: Requires dealing with commands that have already been undone: We must remember to skip these commands. Violates Single Responsibility Principle and Separation of Concerns as `HistoryManager` now needs to do two different things.
 // end::undoredo[]
 
+// tag::login[]
+=== User Accounts System
+The user accounts system allows multiple users to use the Expense Tracker on the same computer without interfering with each other's data. It also includes an optional password system that allows users to protect their expense tracker information from being viewed or altered by others.
+
+==== Current Implementation
+On initialization, the `MainApp` class loads all xml files within the data folder according to the path in `UserPrefs`. The data is loaded by `MainApp#initModelManager(Storage, UserPref)`.
+[NOTE]
+====
+An xml data file not be loaded if the username value is not the same as the filename (ignoring file extension).
+====
+
+This system is facilitated by methods in the Model interface which now supports the following operations:
+
+* `Model#loadUserData(Username, Password)` -- Logs in to the user with the input Username and Password and loads the associated data. Returns true if the password matches the user's password, else the user is not logged into and false is returned
+* `Model#unloadUserData()` -- Unselects the user in the Model
+* `Model#isUserExists(Username)` -- Checks if a user with the input Username exists in the model
+* `Model#addUser(Username)` -- Adds a new user with the given Username to the model
+* `Model#hasSelectedUser()` -- Checks if a user is currently logged in in the model
+
+The classes `Username` and `Password` have also been implemented and have the following noteworthy characteristics:
+
+* Two `Username` classes are equivalent if and only if the internal username String are equivalent (case-insensitive).
+* `Username` cannot be constructed with a String containing any of the following characters: _" > < : \ / | ? *_
+* When a `Password` class is constructed with plain text, the password is hashed before being stored as an internal String in the `Password` object
+* `Password` is only valid if the plain text form is at least 6 characters long
+
+Given below is an example usage scenario and how the User Account System behaves at each step when the application is launched.
+
+. The user launches the application and the directory path in the UserPref points at the _data_ folder
+. The method `Storage#readAllExpenses(Path)` is called by the MainApp and the method loads all the xml data files in the _data_ folder and returns the loaded data as a `Map<Username, ReadOnlyAddressBook>` with the `Username` of the user data as the key and the user data as a `ReadOnlyAddressBook` as the value to the MainApp class
+. A `Model` instance will then be initialized using the previously mentioned `Map` of user data.
+
+Given below is an example usage scenario and how the Sign Up and Login system behaves at each step after the application is launched.
+
+. The user executes the command `signup john` to create a user with the `Username` john
+. The `signup` command calls `Model#addUser(Username)` which adds the user `john` to the `Model`. The operation is successful as `john` does not break any of the `Username` constraints and does not already exist in the Model.
+. The user then executes the command `login u/john` to log in to his user account
+. The `login` command calls `loadUserData(Username, Password)` with a null password as a password was not provided. The method is executed successfully as the user `john` has no password set.
+. The selected data in the `Model` is switched to `john`'s and an `UserLoggedInEvent` is raised for the `UI` to show `john`'s Expense Tracker data
+
+Given below is an example usage scenario and how the Password system behaves at each step after the he/she is logged in.
+
+. The user is already logged in to the account `john` with an existing password `password1` and executes the command `setpassword o/password1 n/password2` to change his password to `password2`
+. The `setpassword` command calls the `Model#setPassword(Password)` method since the given old password matches his existing password and `password2` does not violate any password constraints
+. The `Model#setPassword(Password)` changes `john`'s account password to `password2`
+
+==== Design Considerations
+===== Aspect: Storage of Separate User Data
+
+* **Alternative 1 (current choice):**
+** Pros: More work needed to implement as the data loading has to be changed to read from multiple xml files
+** Cons: Users can transfer their own data between computers easily by just copying their own account's xml file
+* **Alternative 2:** Save all the separated user data in a single xml data file
+** Pros: Relatively easier to implement. Addressbook-level4 already loads data from a single xml data file so less work has to be done to change the storage structure
+** Cons: Users will be unable to easily transfer their individual data to another computer
+
+===== Aspect: Loading of User Data
+
+* **Alternative 1 (current choice):** Loading of User data is only done on initialization of the Expense Tracker
+** Pros: Ability to switch user accounts quickly after the Expense Tracker is loaded as all users are already loaded into memory
+** Cons: External changes to the data files after initialization will not be reflected may be overwritten
+* **Alternative 2:** User data is loaded only when the user attempts to log in
+** Pros: Unnecessary data is not kept in memory so memory space is not wasted
+** Cons: Increase degree of coupling between the Logic, Model and Storage components as the login command will require the Storage to load and return the user's data.
+// end::login[]
+
 // tag::dataencryption[]
 === [Proposed] Data Encryption
 
 _{Explain here how the data encryption feature will be implemented}_
 
 // end::dataencryption[]
+
+=== Statistics
+
+Given below is an example usage scenario and of how the statistics mechanism behaves at each step.
+
+. User enters command `stats n/7 m/d`. The command is received by `AddressBookParser`, which calls `StatsCommandParser#parse()`
+to create a `StatsCommand` object with the two extracted parameters. The `StatsCommand` object is returned to `LogicManager`.
+
+. `LogicManager` then calls `StatsCommand#execute()`, which updates the `Predicate` and `StatsMode` in `ModelManager`, which
+are used as filters for the expense list. The `Predicate` is used to filter out expenses which have dates within the last 7 days.
+`StatsMode` is set to DAY, representing the day mode.
+`StatsCommand#execute()` also posts a `ShowStatsRequestEvent` event to the `EventsCenter`.
+
+. The `ShowStatsRequestEvent` event is handled by `MainWindow#handleShowStatsEvent()`, which updates the 'StatisticsPanel' object after getting the
+expense data and mode by calling `Logic#getExpenseStats()` and `Logic#getStatsMode()`.
+
+. `Logic#getExpenseStats()` gets the filtered expense list by calling `ModelManager#getExpenseStats()`, which returns
+an unmodifiable `ObservableList`, only containing only expenses in the last 7 days, as per the `Predicate`, and sorted by date.
+`Logic#getExpenseStats()` then puts the data into a `LinkedHashMap<String, Double>`, where the key represents the days and the value represents
+the total cost for that day
+
+. `Logic#getStatsMode()` gets the current StatsMode by calling `Model#getStatsMode()`
+
+. `StatisticsPanel` UI element updates the bar chart in `chartArea` to show the expenses over the last 7 days.
+
+=== Find
+
+Given below is an example usage scenario and of how the find mechanism behaves at each step.
+
+. User enters command `find n/Have Lunch f/Food d/01-01-2018:03-01-2018`. The command is received by `AddressBookParser`,
+which then creates a `FindCommandParser` Object and call `FindCommandParser#parse()` method.
+
+. `FindCommandParser#parse()` method calls `ArgumentTokenizer#tokenize()` to tokenize the input String into keywords and store them in
+an ArgumentMultimap Object.
+
+. `FindCommandParser#parse()` method then calls `FindCommandParser#ensureKeywordsAreValid()` method. If any
+of the keywords doesn't conform to the correct format, `ParseException` will be thrown. If no exception is thrown, a
+`ExpenseContainsKeywordsPredicate` Object is created. It implements Predicate<Expense> interface and is used to filter
+out all the expenses which matches the keywords entered by the user.
+
+. A `FindCommand` Object with the `ExpenseContainsKeywordsPredicate` Object as parameter is created and returned to
+`LogicManager`.
+
+. `LogicManager` then calls `StatsCommand#execute()`,which calls `ModelManager#updateFilteredExpenseList()`
+method to update the predicate of FilterList<Expense>. FilterList now contains new set of expenses which filtered by the
+new predicate.
+
+. Then the expense list panel will show a new set of expenses according to the keywords.
+
+// tag::UserInterfaceRedesign[]
+=== User Interface Redesign
+
+The UI has been redesigned to implement the following UI elements required for the Expense Tracker:
+
+* Budget Panel
+* Statistics Panel
+* Notifications Panel
+* Categories Panel
+
+Animations will also be incorporated into the UI elements for a better user experience.
+
+==== Budget Panel
+The budget panel consists of 3 UI elements:
+
+*	`BudgetPanel#expenseDisplay` – A `Text` element that displays the user’s current expenses.
+*	`BudgetPanel#budgetDisplay` – A `Text` element that displays the user’s monthly budget cap.
+*	`BudgetPanel#budgetBar` – A `progressBar` element that visually presents the percentage of the current budget cap that has been used.
+
+Given below is an example scenario of how `BudgetPanel` is updated:
+
+. The user launches the application and signs up for a new account. The `MainWindow` creates a new `BudgetPanel`, which elements are initialized as follows:
+* `BudgetPanel#expenseDisplay` is green and set to "$0.00".
+* `BudgetPanel#budgetDisplay` is set to "/ $28.00", with $28.00 being the default budget.
+* `BudgetPanel#budgetBar` is green and at 0% progress.
+
+. The user executes the command `add n/Lunch $/30.00 c/Food`. As the `'add` command modifies the budget and expenses, `AddCommand#execute()` will post a `UpdateBudgetPanelEvent` event to the EventsCenter.
+[NOTE]
+If a command fails its execution, the `UpdateBudgetPanelEvent` will not be posted.
+
+. The `UpdateBudgetPanelEvent` event is handled by `BudgetPanel#handleBudgetPanelEvent()`, which calls `BudgetPanel#update()`.
+
+. `BudgetPanel#update()` calls `BudgetPanel#animateBudgetPanel()`, which creates a new `Timeline` object.
+
+. Two `KeyFrame` objects are added to the Timeline that smooths the transition of the `BudgetPanel#budgetBar` progress percentage from 0% to the updated percentage.
+[NOTE]
+If the updated percentage is more than 1.0, `BudgetPanel#budgetBar` progress percentage will be set to 1.0. Barring oversights, the progress percentage should never fall below 0.0.
+
+. A call to 'BudgetPanel#incrementKeyFrames()` is made to create the incrementing animation for `BudgetPanel#expenseDisplay`. The total time for this animation is 0.5 seconds, and consists of 10 `KeyFrame` objects. With this information, the amount to increment `BudgetPanel#expenseDisplay` by each `KeyFrame` can be calculated.
+ `BudgetPanel#updateExpenseDisplay()` is called to increment the `BudgetPanel#expenseDisplay`.
+[NOTE]
+`BudgetPanel#incrementKeyFrames()` handles the animation for both the `BudgetPanel#budgetDisplay` and `BudgetPanel#expenseDisplay` at the same time.
+
+. `Timeline#playFromStart()` is called to execute the animation.
+
+. `BudgetPanel#update()` also calls `BudgetPanel#setBudgetUiColors()``. The method detects that the user has gone over budget, and changes the color of `BudgetPanel#expenseDisplay` and `BudgetPanel#budgetBar` from green to red.
+[NOTE]
+Similarly, if the user has gone from over budget to under budget, the color of 'BudgetPanel#expenseDisplay` and `BudgetPanel#budgetBar` should change from red to green.
+
+===== Design Considerations
+====== Aspect: Which library to implement animation
+
+* **Alternative 1 (current choice):** Use the `Timeline` and `KeyFrame` class
+** Pros: More flexible; Able to create the animation frame by frame.
+** Cons: Animations tricks and effects will require manual tweaking for the intented effect.
+* **Alternative 2:** Use the `Transition` class
+** Pros: The class is specialized, and thus has built-in methods to create better animations For example, `EASE-BOTH` can be used to cause the transition to accelerate at different points for a better effect)
+** Cons: Does not work for certain desired effects, such as the 'incrementing' effect required for the `Text` elements of the `BudgetPanel`.
+
+// end::userInterfaceRedesign[]
+
+// tag::budget[]
+
+=== Budget
+==== Current Implementation
+The current implementation for budget tracking is described as below.
+
+===== Keeping spendings within budget
+The budget mechanism is facilitated by `VersionedAddressBook` and `AddCommand`. Whenever a user adds an expense via
+`AddCommand` if they do not have a budget set, the application will prompt them to do so. After they do so,
+application proceeds normally. If adding another expense will result in them exceeding the budget, they can still do
+so, but a warning will be given to the user.
+
+===== Recurring budget
+Every time a user logs in, `Model#loadUserData()` is called and  the application will check if the user has set a time
+where the
+budget will reset (recurrence time). If it is not set, the expense tracker will issue a notification. Else, the
+expense tracker will track the set recurrence time against the time now. If it exceeds, budget will be reset. Else,
+nothing will be done.
+
+* Recurrence time is set by `setReccurenceFrequency()`. If it has not been set before, the next recurrence time will
+be set to `currentTime` + `recurrenceFrequency`.
+* If it has already been set, the timing will be updated on the next occurence time
+
+===== Notification center (Proposed)
+There is an area for the app to display notifications and additional information to the users beside the usual
+area below the command box. This is particularly useful to the *Budget* feature as budgets should not obstruct the
+usage of the expense tracker, but rather provide helpful information. For example, if a user exceeds his budget after
+ adding an expense, a warning would be displayed in the *Notification center* instead of the area below the command
+ box, replacing the success message of adding an expense and confusing the user.
+
+===== Budget by Category (Proposed)
+Users can now allocate their budgets by categories. This means that within a fixed budget, they can decide how big of
+ a proportion a certain category of expense takes. Every `Category` will now have a `Budget` and the total budget in
+ `ModelManager` will never exceed the sum of all budgets in `Category`.
+
+==== Alternatives considered
+Recurrence check was initially implemented via events. Every time `ModelManager#loadUserData()` is called, an event
+will be sent to the `EventBus` to be dispatched to an event handler implemented in `Budget`. However, after heavy
+consideration, the recurrence check should only be called whenever `loadUserData()` is called, and never anywhere
+else. Therefore, it should be more closely coupled with `loadUserData()` instead of being an event that can be posted
+ from anywhere inside the application.
+
+// end::budget[]
 
 === Logging
 
@@ -462,43 +705,55 @@ The most reliable way to run tests is the 3rd one. The first two methods might f
 
 *Method 1: Using IntelliJ JUnit test runner*
 
-* To run all tests, right-click on the `src/test/java` folder and choose `Run 'All Tests'`
-* To run a subset of tests, you can right-click on a test package, test class, or a test and choose `Run 'ABC'`
+* To run all tests, carry out the following steps:
+. Right-click on the `src/test/java` folder
+. Click on `Run 'All Tests'` on the menu that appears
+
+* To run a subset of tests, carry out the following steps:
+. Right-click on a test package, test class, or a test
+. Click on `Run 'TEST'`, where TEST is the name of the test package, class or method you are intending to test
 
 *Method 2: Using Gradle*
 
-* Open a console and run the command `gradlew clean allTests` (Mac/Linux: `./gradlew clean allTests`)
+* To use Gradle to run tests, carry out the following steps:
+. Open a console
+. If you are on windows, enter the command `gradlew clean allTests`, otherwise enter `./gradlew clean allTests` instead
 
 [NOTE]
 See <<UsingGradle#, UsingGradle.adoc>> for more info on how to run tests using Gradle.
 
 *Method 3: Using Gradle (headless)*
 
-Thanks to the https://github.com/TestFX/TestFX[TestFX] library we use, our GUI tests can be run in the _headless_ mode. In the headless mode, GUI tests do not show up on the screen. That means the developer can do other things on the Computer while the tests are running.
+Using the https://github.com/TestFX/TestFX[TestFX] library, our GUI tests can be run in the _headless_ mode.
+In the headless mode, GUI tests do not show up on the screen. That means the developer can do other things on the Computer while the tests are running.
 
-To run tests in headless mode, open a console and run the command `gradlew clean headless allTests` (Mac/Linux: `./gradlew clean headless allTests`)
+* To run tests in headless mode, carry out the following steps:
+. Open a console
+. If you are on windows, enter the command `gradlew clean headless allTests`, otherwise enter `./gradlew clean headless allTests` instead
 
 === Types of tests
 
-We have two types of tests:
+We have two main types of tests:
 
-.  *GUI Tests* - These are tests involving the GUI. They include,
-.. _System Tests_ that test the entire App by simulating user actions on the GUI. These are in the `systemtests` package.
-.. _Unit tests_ that test the individual components. These are in `seedu.address.ui` package.
-.  *Non-GUI Tests* - These are tests not involving the GUI. They include,
-..  _Unit tests_ targeting the lowest level methods/classes. +
+*  *GUI Tests* - These are tests involving the GUI. They include,
+** _System Tests_ that test the entire App by simulating user actions on the GUI. These are in the `systemtests` package.
+** _Unit tests_ that test the individual components. These are in `seedu.address.ui` package.
+*  *Non-GUI Tests* - These are tests not involving the GUI. They include,
+**  _Unit tests_ targeting the lowest level methods/classes. +
 e.g. `seedu.address.commons.StringUtilTest`
-..  _Integration tests_ that are checking the integration of multiple code units (those code units are assumed to be working). +
+**  _Integration tests_ that are checking the integration of multiple code units (those code units are assumed to be working). +
 e.g. `seedu.address.storage.StorageManagerTest`
-..  Hybrids of unit and integration tests. These test are checking multiple code units as well as how the are connected together. +
+**  Hybrids of unit and integration tests. These test are checking multiple code units as well as how the are connected together. +
 e.g. `seedu.address.logic.LogicManagerTest`
 
 
 === Troubleshooting Testing
-**Problem: `HelpWindowTest` fails with a `NullPointerException`.**
+This section includes common issues that arise during testing.
 
-* Reason: One of its dependencies, `HelpWindow.html` in `src/main/resources/docs` is missing.
-* Solution: Execute Gradle task `processResources`.
+* Problem: `HelpWindowTest` fails with a `NullPointerException`.
+
+** Reason: One of its dependencies, `HelpWindow.html` in `src/main/resources/docs` is missing.
+** Solution: Execute Gradle task `processResources`.
 
 == Dev Ops
 

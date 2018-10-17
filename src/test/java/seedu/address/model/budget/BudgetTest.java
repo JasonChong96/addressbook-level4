@@ -36,4 +36,10 @@ public class BudgetTest {
         assertTrue(Budget.isValidBudget("1.00")); // one dollar
         assertTrue(Budget.isValidBudget("231231232131231.00")); // high ses budget
     }
+
+    @Test
+    public void equals() {
+        assertTrue(new Budget(0, 0).equals(new Budget("0.00")));
+        assertTrue(new Budget(0, 0).equals(new Budget(0, 0, null, 50000)));
+    }
 }

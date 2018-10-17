@@ -3,8 +3,10 @@ package seedu.address.model;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
@@ -12,15 +14,19 @@ import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import seedu.address.commons.core.ComponentManager;
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.events.model.AddressBookChangedEvent;
 import seedu.address.commons.events.model.UserLoggedInEvent;
+import seedu.address.logic.commands.StatsCommand.StatsMode;
 import seedu.address.model.budget.Budget;
 import seedu.address.model.exceptions.NoUserSelectedException;
 import seedu.address.model.exceptions.NonExistentUserException;
 import seedu.address.model.exceptions.UserAlreadyExistsException;
+import seedu.address.model.expense.Date;
 import seedu.address.model.expense.Expense;
+import seedu.address.model.user.Password;
 import seedu.address.model.user.Username;
 
 /**
@@ -29,10 +35,13 @@ import seedu.address.model.user.Username;
 public class ModelManager extends ComponentManager implements Model {
     private static final Logger logger = LogsCenter.getLogger(ModelManager.class);
 
-    private Predicate<Expense> expenseStatPredicate;
     private VersionedAddressBook versionedAddressBook;
     private FilteredList<Expense> filteredExpenses;
     private Username username;
+
+    private StatsMode statsMode;
+    private Predicate<Expense> expenseStatPredicate;
+
     private final Map<Username, ReadOnlyAddressBook> addressBooks;
 
     /**
@@ -59,7 +68,7 @@ public class ModelManager extends ComponentManager implements Model {
         this.versionedAddressBook = null;
         this.filteredExpenses = null;
         try {
-            loadUserData(addressBook.getUsername());
+            loadUserData(addressBook.getUsername(), addressBook.getPassword().orElse(null));
         } catch (NonExistentUserException e) {
             throw new IllegalStateException();
         }
@@ -190,6 +199,12 @@ public class ModelManager extends ComponentManager implements Model {
         indicateAddressBookChanged();
     }
 
+    @Override
+    public void setRecurrenceFrequency(long seconds) throws NoUserSelectedException {
+        this.versionedAddressBook.setRecurrenceFrequency(seconds);
+        indicateAddressBookChanged();
+    }
+
 
     @Override
     public Budget getMaximumBudget() {
@@ -200,16 +215,21 @@ public class ModelManager extends ComponentManager implements Model {
     //=========== Stats =================================================================================
     /**
      * Returns an unmodifiable view of the list of {@code Expense} backed by the internal list of
-     * {@code versionedAddressBook}
+     * {@code versionedAddressBook}, filtered by {@code expenseStatPredicate} and sorted by expense date.
      */
     @Override
     public ObservableList<Expense> getExpenseStats() throws NoUserSelectedException {
-        if (filteredExpenses == null) {
+        if (this.filteredExpenses == null) {
             throw new NoUserSelectedException();
         }
-        FilteredList<Expense> temp = new FilteredList<>(versionedAddressBook.getExpenseList());
-        temp.setPredicate(expenseStatPredicate);
-        return FXCollections.unmodifiableObservableList(temp);
+        FilteredList<Expense> filteredList = new FilteredList<>(versionedAddressBook.getExpenseList());
+        filteredList.setPredicate(expenseStatPredicate);
+
+        SortedList<Expense> sortedList = new SortedList<>(filteredList);
+        Comparator<Expense> byDate = (Expense a, Expense b) -> (-1 * Date.compare(a.getDate(), b.getDate()));
+        sortedList.setComparator(byDate);
+
+        return FXCollections.unmodifiableObservableList(sortedList);
     }
 
     @Override
@@ -220,25 +240,42 @@ public class ModelManager extends ComponentManager implements Model {
         expenseStatPredicate = predicate;
     }
 
-    //@@author
+    @Override
+    public void updateStatsMode(StatsMode mode) {
+        this.statsMode = mode;
+    }
+
+    @Override
+    public StatsMode getStatsMode() {
+        return this.statsMode;
+    }
+
+    //@@author JasonChong96
     //=========== Login =================================================================================
     @Override
-    public void loadUserData(Username username) throws NonExistentUserException {
+    public boolean loadUserData(Username username, Password password) throws NonExistentUserException {
         if (!isUserExists(username)) {
             throw new NonExistentUserException(username, addressBooks.size());
         }
-
+        if (!addressBooks.get(username).isMatchPassword(password)) {
+            return false;
+        }
+        if (hasSelectedUser()) {
+            addressBooks.replace(this.username, this.versionedAddressBook);
+        }
         this.versionedAddressBook = new VersionedAddressBook(addressBooks.get(username));
 
         this.filteredExpenses = new FilteredList<>(versionedAddressBook.getExpenseList());
         this.username = username;
-        addressBooks.replace(this.username, this.versionedAddressBook);
+
         try {
             indicateUserLoggedIn();
             indicateAddressBookChanged();
+            checkBudgetRestart();
         } catch (NoUserSelectedException nuse) {
             throw new IllegalStateException(nuse.getMessage());
         }
+        return true;
     }
 
     @Override
@@ -261,6 +298,14 @@ public class ModelManager extends ComponentManager implements Model {
         raise(new UserLoggedInEvent(this.username));
     }
 
+    /**
+     * Checks if budget is required to restart due to recurrence
+     */
+    protected void checkBudgetRestart() {
+        this.versionedAddressBook.getMaximumBudget().checkBudgetRestart();
+    }
+
+
     @Override
     public Model copy(UserPrefs userPrefs) throws NoUserSelectedException {
         ModelManager copy = new ModelManager(addressBooks, userPrefs);
@@ -272,7 +317,7 @@ public class ModelManager extends ComponentManager implements Model {
 
     @Override
     public void addUser(Username newUsername) throws UserAlreadyExistsException {
-        if (addressBooks.putIfAbsent(newUsername, new AddressBook(newUsername)) != null) {
+        if (addressBooks.putIfAbsent(newUsername, new AddressBook(newUsername, Optional.empty())) != null) {
             throw new UserAlreadyExistsException(newUsername);
         }
     }
@@ -281,6 +326,16 @@ public class ModelManager extends ComponentManager implements Model {
     public boolean hasSelectedUser() {
         return versionedAddressBook != null && filteredExpenses != null && username != null;
     }
+
+    @Override
+    public void setPassword(Password password) throws NoUserSelectedException {
+        if (this.versionedAddressBook == null) {
+            throw new NoUserSelectedException();
+        }
+        versionedAddressBook.password = Optional.ofNullable(password);
+        addressBooks.replace(this.username, this.versionedAddressBook);
+    }
+    //@@author
 
     @Override
     public boolean equals(Object obj) {

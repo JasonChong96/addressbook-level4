@@ -17,16 +17,16 @@ import static seedu.address.logic.commands.CommandTestUtil.NAME_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.NAME_DESC_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.TAG_DESC_FRIEND;
 import static seedu.address.logic.commands.CommandTestUtil.TAG_DESC_HUSBAND;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_CATEGORY_AMY;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_COST_AMY;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_AMY;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_CATEGORY_GAME;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_COST_GAME;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_GAME;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_IPHONE;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 import static seedu.address.model.Model.PREDICATE_SHOW_ALL_EXPENSES;
 import static seedu.address.testutil.TypicalExpenses.AMY;
 import static seedu.address.testutil.TypicalExpenses.BOB;
-import static seedu.address.testutil.TypicalExpenses.KEYWORD_MATCHING_MEIER;
+import static seedu.address.testutil.TypicalExpenses.KEYWORD_MATCHING_BUY;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_EXPENSE;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_EXPENSE;
 
@@ -52,6 +52,7 @@ public class EditCommandSystemTest extends AddressBookSystemTest {
     @Test
     public void edit() throws NoUserSelectedException {
         Model model = getModel();
+        showAllExpenses();
         /* -------------- Performing edit operation while an unfiltered list is being shown ------------------- */
         /* Case: edit all fields, command with leading spaces, trailing spaces and multiple spaces between each
          * field -> edited
@@ -81,7 +82,7 @@ public class EditCommandSystemTest extends AddressBookSystemTest {
         assertNotEquals(getModel().getFilteredExpenseList().get(index.getZeroBased()), BOB);
         command = EditCommand.COMMAND_WORD + " " + index.getOneBased() + NAME_DESC_AMY + CATEGORY_DESC_BOB
                 + COST_DESC_BOB + TAG_DESC_FRIEND + TAG_DESC_HUSBAND;
-        editedExpense = new ExpenseBuilder(BOB).withName(VALID_NAME_AMY).build();
+        editedExpense = new ExpenseBuilder(BOB).withName(VALID_NAME_GAME).build();
         assertCommandSuccess(command, index, editedExpense);
 
         /* Case: edit a expense with new values same as another expense's values but with different category and cost
@@ -90,7 +91,7 @@ public class EditCommandSystemTest extends AddressBookSystemTest {
         index = INDEX_SECOND_EXPENSE;
         command = EditCommand.COMMAND_WORD + " " + index.getOneBased() + NAME_DESC_BOB + CATEGORY_DESC_AMY
                 + COST_DESC_AMY + TAG_DESC_FRIEND + TAG_DESC_HUSBAND;
-        editedExpense = new ExpenseBuilder(BOB).withCategory(VALID_CATEGORY_AMY).withCost(VALID_COST_AMY).build();
+        editedExpense = new ExpenseBuilder(BOB).withCategory(VALID_CATEGORY_GAME).withCost(VALID_COST_GAME).build();
         assertCommandSuccess(command, index, editedExpense);
         /* Case: clear tags -> cleared */
         index = INDEX_FIRST_EXPENSE;
@@ -100,17 +101,17 @@ public class EditCommandSystemTest extends AddressBookSystemTest {
         assertCommandSuccess(command, index, editedExpense);
         /* --------------- Performing edit operation while a filtered list is being shown --------------------- */
         /* Case: filtered expense list, edit index within bounds of address book and expense list -> edited */
-        showExpensesWithName(KEYWORD_MATCHING_MEIER);
+        showExpensesWithName(KEYWORD_MATCHING_BUY);
         index = INDEX_FIRST_EXPENSE;
         assertTrue(index.getZeroBased() < getModel().getFilteredExpenseList().size());
         command = EditCommand.COMMAND_WORD + " " + index.getOneBased() + " " + NAME_DESC_BOB;
         expenseToEdit = getModel().getFilteredExpenseList().get(index.getZeroBased());
-        editedExpense = new ExpenseBuilder(expenseToEdit).withName(VALID_NAME_BOB).build();
+        editedExpense = new ExpenseBuilder(expenseToEdit).withName(VALID_NAME_IPHONE).build();
         assertCommandSuccess(command, index, editedExpense);
         /* Case: filtered expense list, edit index within bounds of address book but out of bounds of expense list
          * -> rejected
          */
-        showExpensesWithName(KEYWORD_MATCHING_MEIER);
+        showExpensesWithName(KEYWORD_MATCHING_BUY);
         int invalidIndex = getModel().getAddressBook().getExpenseList().size();
         assertCommandFailure(EditCommand.COMMAND_WORD + " " + invalidIndex + NAME_DESC_BOB,
                 Messages.MESSAGE_INVALID_EXPENSE_DISPLAYED_INDEX);
@@ -152,7 +153,7 @@ public class EditCommandSystemTest extends AddressBookSystemTest {
 
         /* Case: invalid address -> rejected */
         assertCommandFailure(EditCommand.COMMAND_WORD + " " + INDEX_FIRST_EXPENSE.getOneBased()
-                + INVALID_ADDRESS_DESC, Cost.MESSAGE_ADDRESS_CONSTRAINTS);
+                + INVALID_ADDRESS_DESC, Cost.MESSAGE_COST_CONSTRAINTS);
         /* Case: invalid tag -> rejected */
         assertCommandFailure(EditCommand.COMMAND_WORD + " " + INDEX_FIRST_EXPENSE.getOneBased()
                 + INVALID_TAG_DESC, Tag.MESSAGE_TAG_CONSTRAINTS);

@@ -67,7 +67,7 @@ public class TestApp extends MainApp {
                 TestUtil.getFilePathInSandboxFolder(userPrefs.getAddressBookDirPath().toString()));
         double x = Screen.getPrimary().getVisualBounds().getMinX();
         double y = Screen.getPrimary().getVisualBounds().getMinY();
-        userPrefs.updateLastUsedGuiSetting(new GuiSettings(600.0, 600.0, (int) x, (int) y));
+        userPrefs.updateLastUsedGuiSetting(new GuiSettings(800.0, 800.0, (int) x, (int) y));
         return userPrefs;
     }
 

@@ -9,7 +9,7 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
  */
 public class Cost {
 
-    public static final String MESSAGE_ADDRESS_CONSTRAINTS =
+    public static final String MESSAGE_COST_CONSTRAINTS =
             "Cost should only take values in the following format: {int}.{digit}{digit}";
 
     /*
@@ -27,7 +27,7 @@ public class Cost {
      */
     public Cost(String cost) {
         requireNonNull(cost);
-        checkArgument(isValidCost(cost), MESSAGE_ADDRESS_CONSTRAINTS);
+        checkArgument(isValidCost(cost), MESSAGE_COST_CONSTRAINTS);
         value = cost;
     }
 

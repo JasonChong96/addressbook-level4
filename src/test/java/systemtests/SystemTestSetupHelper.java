@@ -54,7 +54,7 @@ public class SystemTestSetupHelper {
         try {
             FxToolkit.setupFixture(() -> {
                 try {
-                    testApp.getActualModel().loadUserData(TypicalExpenses.SAMPLE_USERNAME);
+                    testApp.getActualModel().loadUserData(TypicalExpenses.SAMPLE_USERNAME, null);
                 } catch (NonExistentUserException e) {
                     Assert.fail(e.getMessage());
                 }

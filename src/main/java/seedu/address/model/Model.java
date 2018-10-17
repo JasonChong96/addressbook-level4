@@ -3,11 +3,13 @@ package seedu.address.model;
 import java.util.function.Predicate;
 
 import javafx.collections.ObservableList;
+import seedu.address.logic.commands.StatsCommand.StatsMode;
 import seedu.address.model.budget.Budget;
 import seedu.address.model.exceptions.NoUserSelectedException;
 import seedu.address.model.exceptions.NonExistentUserException;
 import seedu.address.model.exceptions.UserAlreadyExistsException;
 import seedu.address.model.expense.Expense;
+import seedu.address.model.user.Password;
 import seedu.address.model.user.Username;
 
 /**
@@ -59,6 +61,16 @@ public interface Model {
     void updateFilteredExpenseList(Predicate<Expense> predicate) throws NoUserSelectedException;
 
     /**
+     * Updates statsMode to the given {@code mode}.
+     */
+    void updateStatsMode(StatsMode mode);
+
+    /**
+     * Returns statsMode.
+     */
+    StatsMode getStatsMode();
+
+    /**
      * Returns true if the model has previous address book states to restore.
      */
     boolean canUndoAddressBook() throws NoUserSelectedException;
@@ -84,9 +96,10 @@ public interface Model {
     void commitAddressBook() throws NoUserSelectedException;
 
     /**
-     * Selects the AddressBook of the user with the input username to be used.
+     * Selects the AddressBook of the user with the input username to be used. Returns true if successful, false if the
+     * input password is incorrect.
      */
-    void loadUserData(Username username) throws NonExistentUserException;
+    boolean loadUserData(Username username, Password password) throws NonExistentUserException;
 
     /**
      * Logs out the user in the model.
@@ -123,10 +136,21 @@ public interface Model {
      */
     void modifyMaximumBudget(Budget budget) throws NoUserSelectedException;
 
+    /**
+     * Returns the existing maximum budget for the current user
+     */
     Budget getMaximumBudget();
+
+    /**
+     * Sets the budget to reset and store spending data after a certain amount of time
+     * @param seconds The recurrence frequency
+     */
+    void setRecurrenceFrequency(long seconds) throws NoUserSelectedException;
 
     /**
      * Returns a copy of this model.
      */
     Model copy(UserPrefs userPrefs) throws NonExistentUserException, NoUserSelectedException;
+
+    void setPassword(Password password) throws NoUserSelectedException;
 }

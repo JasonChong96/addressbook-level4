@@ -366,10 +366,39 @@
     -fx-padding: 5px;
 }
 
-#notificationPanel .label, #budgetPanel .label{
+#notificationPanel .label, #budgetPanel .label, #statisticLabel{
     -fx-font-size: 20pt;
     -fx-font-family: "Segoe UI Semibold";
     -fx-text-fill: #656565;
     -fx-padding: 5px;
 }
 
+#budgetBar > .track {
+    -fx-control-inner-background: derive(#e9e5db, 20%);
+    -fx-background-insets: 0;
+}
+
+#budgetBar {
+    -fx-accent: derive(#61a15a, 20%);
+}
+
+#budgetPanel {
+    -fx-font-size: 20pt;
+    -fx-font-family: "Segoe UI Semibold";
+}
+
+#budgetDisplay{
+    -fx-fill: #656565;
+}
+
+#expenseDisplay {
+    -fx-fill: #61a15a;
+}
+
+.greenBar {
+
+}
+
+.redBar {
+
+}

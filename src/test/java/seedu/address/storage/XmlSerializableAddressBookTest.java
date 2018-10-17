@@ -30,6 +30,8 @@ public class XmlSerializableAddressBookTest {
                 XmlSerializableAddressBook.class);
         AddressBook addressBookFromFile = dataFromFile.toModelType();
         AddressBook typicalExpensesAddressBook = TypicalExpenses.getTypicalAddressBook();
+        System.out.println(addressBookFromFile.getMaximumBudget().getNumberOfSecondsToRecurAgain() + " "
+            + typicalExpensesAddressBook.getMaximumBudget().getNumberOfSecondsToRecurAgain());
         assertEquals(addressBookFromFile, typicalExpensesAddressBook);
         assertEquals(addressBookFromFile.getMaximumBudget(), typicalExpensesAddressBook.getMaximumBudget());
     }

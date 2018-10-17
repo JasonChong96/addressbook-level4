@@ -7,6 +7,9 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 
+import seedu.address.commons.core.EventsCenter;
+import seedu.address.commons.events.ui.SwapLeftPanelEvent;
+import seedu.address.commons.events.ui.UpdateBudgetPanelEvent;
 import seedu.address.logic.CommandHistory;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
@@ -37,6 +40,7 @@ public class AddCommand extends Command {
 
     public static final String MESSAGE_SUCCESS = "New expense added: %1$s";
     public static final String MESSAGE_DUPLICATE_EXPENSE = "This expense already exists in the address book";
+    //TODO: Redirect this to notification center
     public static final String MESSAGE_BUDGET_EXCEED_WARNING = "WARNING: "
         + "Adding this expense will cause your budget to exceed.";
 
@@ -53,13 +57,13 @@ public class AddCommand extends Command {
     @Override
     public CommandResult execute(Model model, CommandHistory history) throws CommandException, NoUserSelectedException {
         requireNonNull(model);
-
+        EventsCenter.getInstance().post(new SwapLeftPanelEvent(SwapLeftPanelEvent.PanelType.LIST));
         if (model.hasExpense(toAdd)) {
             throw new CommandException(MESSAGE_DUPLICATE_EXPENSE);
         }
-
         boolean withinBudget = model.addExpense(toAdd);
         model.commitAddressBook();
+        EventsCenter.getInstance().post(new UpdateBudgetPanelEvent(model.getMaximumBudget()));
         if (withinBudget) {
             return new CommandResult(String.format(MESSAGE_SUCCESS, toAdd));
         }

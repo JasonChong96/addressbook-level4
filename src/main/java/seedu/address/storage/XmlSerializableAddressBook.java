@@ -2,6 +2,7 @@ package seedu.address.storage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -11,6 +12,7 @@ import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.AddressBook;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.expense.Expense;
+import seedu.address.model.user.Password;
 
 /**
  * An Immutable AddressBook that is serializable to XML format
@@ -26,6 +28,8 @@ public class XmlSerializableAddressBook {
     private XmlAdaptedUsername username;
     @XmlElement
     private XmlAdaptedBudget budget;
+    @XmlElement
+    private XmlAdaptedPassword password;
 
     /**
      * Creates an empty XmlSerializableAddressBook.
@@ -41,6 +45,7 @@ public class XmlSerializableAddressBook {
     public XmlSerializableAddressBook(ReadOnlyAddressBook src) {
         this();
         this.username = new XmlAdaptedUsername(src.getUsername());
+        this.password = src.getPassword().map(XmlAdaptedPassword::new).orElse(null);
         expenses.addAll(src.getExpenseList().stream().map(XmlAdaptedExpense::new).collect(Collectors.toList()));
         this.budget = new XmlAdaptedBudget(src.getMaximumBudget());
     }
@@ -52,7 +57,8 @@ public class XmlSerializableAddressBook {
      * {@code XmlAdaptedExpense}.
      */
     public AddressBook toModelType() throws IllegalValueException {
-        AddressBook addressBook = new AddressBook(username.toModelType());
+        Optional<Password> passwordOptional = Optional.ofNullable(password).map(XmlAdaptedPassword::toModelType);
+        AddressBook addressBook = new AddressBook(username.toModelType(), passwordOptional);
         for (XmlAdaptedExpense p : expenses) {
             Expense expense = p.toModelType();
             if (addressBook.hasExpense(expense)) {

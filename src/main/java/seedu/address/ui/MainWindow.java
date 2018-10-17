@@ -6,12 +6,12 @@ import com.google.common.eventbus.Subscribe;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.Orientation;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
@@ -34,6 +34,8 @@ import seedu.address.model.exceptions.NoUserSelectedException;
 public class MainWindow extends UiPart<Stage> {
 
     private static final String FXML = "MainWindow.fxml";
+    private static final int MIN_WIDTH = 900;
+    private static final int MIN_HEIGHT = 800;
 
     private final Logger logger = LogsCenter.getLogger(getClass());
 
@@ -45,7 +47,7 @@ public class MainWindow extends UiPart<Stage> {
     private Config config;
     private UserPrefs prefs;
     private HelpWindow helpWindow;
-    private StatsWindow statsWindow;
+    private StatisticPanel statisticPanel;
 
     @FXML
     private StackPane commandBoxPlaceholder;
@@ -75,7 +77,7 @@ public class MainWindow extends UiPart<Stage> {
     private StackPane leftPanelPlaceholder;
 
     @FXML
-    private SplitPane statisticsSplitPane;
+    private AnchorPane statisticsSplitPane;
 
 
     public MainWindow(Stage primaryStage, Config config, UserPrefs prefs, Logic logic) {
@@ -150,6 +152,7 @@ public class MainWindow extends UiPart<Stage> {
         hideLoggedInUi();
     }
 
+    //@@author snookerballs
     /**
      * Swaps the panel from statistics to list
      */
@@ -158,6 +161,7 @@ public class MainWindow extends UiPart<Stage> {
         leftPanelPlaceholder.getChildren().add(expenseListPanel.getRoot());
     }
 
+    //@@author snookerballs
     /**
      * Swaps the panel from list to statistics
      */
@@ -166,10 +170,11 @@ public class MainWindow extends UiPart<Stage> {
         leftPanelPlaceholder.getChildren().add(statisticsSplitPane);
     }
 
+    //@@author snookerballs
     /**
      * Initialize UI after login
      */
-    private void initializeAfterLogin() {
+    private void initializeAfterLogin() throws NoUserSelectedException {
         try {
             expenseListPanel = new ExpenseListPanel(logic.getFilteredExpenseList());
         } catch (NoUserSelectedException e) {
@@ -181,23 +186,22 @@ public class MainWindow extends UiPart<Stage> {
         Title title = new Title();
         titlePlaceholder.getChildren().add(title.getRoot());
 
-        BudgetPanel budgetPanel = new BudgetPanel();
-        budgetPanelPlaceholder.getChildren().add(budgetPanel.getRoot());
+        BudgetPanel budgetpanel = new BudgetPanel(logic.getMaximumBudget());
+        budgetPanelPlaceholder.getChildren().add(budgetpanel.getRoot());
 
         NotificationPanel notificationPanel = new NotificationPanel();
         notificationPanelPlaceholder.getChildren().add(notificationPanel.getRoot());
 
-        StatisticPanel statisticPanel = new StatisticPanel();
+        statisticPanel = new StatisticPanel(logic.getExpenseStats(), logic.getStatsMode());
         CategoriesPanel categoriesPanel = new CategoriesPanel();
 
-        statisticsSplitPane = new SplitPane();
-        statisticsSplitPane.setOrientation(Orientation.VERTICAL);
-        statisticsSplitPane.getItems().add(statisticPanel.getRoot());
-        statisticsSplitPane.getItems().add(categoriesPanel.getRoot());
+        statisticsSplitPane = new AnchorPane();
+        statisticsSplitPane.setTopAnchor(statisticPanel.getRoot(), 0.0);
+        statisticsSplitPane.setTopAnchor(categoriesPanel.getRoot(), 350.00);
+        statisticsSplitPane.getChildren().addAll(statisticPanel.getRoot(), categoriesPanel.getRoot());
 
-        leftPanelPlaceholder.getChildren().add(expenseListPanel.getRoot());
+        swapToStat();
 
-        swapToList();
     }
 
     /**
@@ -219,7 +223,8 @@ public class MainWindow extends UiPart<Stage> {
         splitPane.setManaged(true);
         splitPane.setVisible(true);
         getPrimaryStage().setMaxHeight(Integer.MAX_VALUE);
-        getPrimaryStage().setMinHeight(600);
+        getPrimaryStage().setMinHeight(MIN_HEIGHT);
+        getPrimaryStage().setMinWidth(MIN_WIDTH);
         setWindowDefaultSize(prefs);
         statusbarPlaceholder.setManaged(true);
     }
@@ -236,8 +241,8 @@ public class MainWindow extends UiPart<Stage> {
      * Sets the default size based on user preferences.
      */
     private void setWindowDefaultSize(UserPrefs prefs) {
-        primaryStage.setHeight(prefs.getGuiSettings().getWindowHeight());
-        primaryStage.setWidth(prefs.getGuiSettings().getWindowWidth());
+        primaryStage.setHeight(Math.max(MIN_HEIGHT, prefs.getGuiSettings().getWindowHeight()));
+        primaryStage.setWidth(Math.max(MIN_WIDTH, prefs.getGuiSettings().getWindowWidth()));
         if (prefs.getGuiSettings().getWindowCoordinates() != null) {
             primaryStage.setX(prefs.getGuiSettings().getWindowCoordinates().getX());
             primaryStage.setY(prefs.getGuiSettings().getWindowCoordinates().getY());
@@ -262,17 +267,6 @@ public class MainWindow extends UiPart<Stage> {
         } else {
             helpWindow.focus();
         }
-    }
-
-    /**
-     * Opens the stats window or focuses on it if it's already opened.
-     */
-    @FXML
-    public void handleStats() {
-        if (statsWindow.isShowing()) {
-            statsWindow.close();
-        }
-        statsWindow.show();
     }
 
     void show() {
@@ -301,19 +295,19 @@ public class MainWindow extends UiPart<Stage> {
     private void handleShowStatsEvent(ShowStatsRequestEvent event) {
         logger.info(LogsCenter.getEventHandlingLogMessage(event));
         try {
-            statsWindow = new StatsWindow(logic.getExpenseStats());
+            statisticPanel.setData(logic.getExpenseStats(), logic.getStatsMode());
         } catch (NoUserSelectedException e) {
             throw new IllegalStateException(e.getMessage());
         }
-        handleStats();
     }
 
     @Subscribe
-    public void handleLoggedInEvent(UserLoggedInEvent event) {
+    public void handleLoggedInEvent(UserLoggedInEvent event) throws NoUserSelectedException {
         initializeAfterLogin();
         showLoggedInUi();
     }
 
+    //@@author snookerballs
     @Subscribe
     public void handleSwapLeftPanelEvent(SwapLeftPanelEvent event) {
         switch(event.getPanelType()) {

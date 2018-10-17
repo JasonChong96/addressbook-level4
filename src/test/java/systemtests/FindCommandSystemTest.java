@@ -2,11 +2,17 @@ package systemtests;
 
 import static org.junit.Assert.assertFalse;
 import static seedu.address.commons.core.Messages.MESSAGE_EXPENSES_LISTED_OVERVIEW;
+import static seedu.address.commons.core.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.commons.core.Messages.MESSAGE_UNKNOWN_COMMAND;
-import static seedu.address.testutil.TypicalExpenses.BENSON;
-import static seedu.address.testutil.TypicalExpenses.CARL;
-import static seedu.address.testutil.TypicalExpenses.DANIEL;
-import static seedu.address.testutil.TypicalExpenses.KEYWORD_MATCHING_MEIER;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
+import static seedu.address.testutil.TypicalExpenses.BOOKS;
+import static seedu.address.testutil.TypicalExpenses.CLOTHES;
+import static seedu.address.testutil.TypicalExpenses.ICECREAM;
+import static seedu.address.testutil.TypicalExpenses.KEYWORD_MATCHING_BUY;
+import static seedu.address.testutil.TypicalExpenses.KEYWORD_MATCHING_FOOD;
+import static seedu.address.testutil.TypicalExpenses.KEYWORD_MATCHING_LUNCH;
+import static seedu.address.testutil.TypicalExpenses.LUNCH;
+import static seedu.address.testutil.TypicalExpenses.TOY;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,54 +26,64 @@ import seedu.address.logic.commands.RedoCommand;
 import seedu.address.logic.commands.UndoCommand;
 import seedu.address.model.Model;
 import seedu.address.model.exceptions.NoUserSelectedException;
+import seedu.address.model.expense.Name;
 import seedu.address.model.tag.Tag;
 
 public class FindCommandSystemTest extends AddressBookSystemTest {
 
     @Test
     public void find() throws NoUserSelectedException {
+        showAllExpenses();
         /* Case: find multiple expenses in address book, command with leading spaces and trailing spaces
          * -> 2 expenses found
          */
-        String command = "   " + FindCommand.COMMAND_WORD + " " + KEYWORD_MATCHING_MEIER + "   ";
+        String command = "   " + FindCommand.COMMAND_WORD + " " + KEYWORD_MATCHING_BUY + "   ";
         Model expectedModel = getModel();
-        ModelHelper.setFilteredList(expectedModel, BENSON, DANIEL); // first names of Benson and Daniel are "Meier"
+        ModelHelper.setFilteredList(expectedModel, TOY, BOOKS);
         assertCommandSuccess(command, expectedModel);
         assertSelectedCardUnchanged();
 
         /* Case: repeat previous find command where expense list is displaying the expenses we are finding
          * -> 2 expenses found
          */
-        command = FindCommand.COMMAND_WORD + " " + KEYWORD_MATCHING_MEIER;
+        command = FindCommand.COMMAND_WORD + " " + KEYWORD_MATCHING_BUY;
+        assertCommandSuccess(command, expectedModel);
+        assertSelectedCardUnchanged();
+
+        /* Case: find one expense in address book with multiple keywords
+         * -> 1 expenses found
+         */
+        command = FindCommand.COMMAND_WORD + " " + KEYWORD_MATCHING_LUNCH + " " + KEYWORD_MATCHING_FOOD;
+        ModelHelper.setFilteredList(expectedModel, LUNCH);
         assertCommandSuccess(command, expectedModel);
         assertSelectedCardUnchanged();
 
         /* Case: find expense where expense list is not displaying the expense we are finding -> 1 expense found */
-        command = FindCommand.COMMAND_WORD + " Carl";
-        ModelHelper.setFilteredList(expectedModel, CARL);
+        command = FindCommand.COMMAND_WORD + " " + PREFIX_NAME + " Toy";
+        ModelHelper.setFilteredList(expectedModel, TOY);
         assertCommandSuccess(command, expectedModel);
         assertSelectedCardUnchanged();
 
         /* Case: find multiple expenses in address book, 2 keywords -> 2 expenses found */
-        command = FindCommand.COMMAND_WORD + " Benson Daniel";
-        ModelHelper.setFilteredList(expectedModel, BENSON, DANIEL);
+        command = FindCommand.COMMAND_WORD + " " + PREFIX_NAME + " ice clothes";
+        ModelHelper.setFilteredList(expectedModel, ICECREAM, CLOTHES);
         assertCommandSuccess(command, expectedModel);
         assertSelectedCardUnchanged();
 
         /* Case: find multiple expenses in address book, 2 keywords in reversed order -> 2 expenses found */
-        command = FindCommand.COMMAND_WORD + " Daniel Benson";
+        command = FindCommand.COMMAND_WORD + " " + PREFIX_NAME + " clothes ice";
         assertCommandSuccess(command, expectedModel);
         assertSelectedCardUnchanged();
 
         /* Case: find multiple expenses in address book, 2 keywords with 1 repeat -> 2 expenses found */
-        command = FindCommand.COMMAND_WORD + " Daniel Benson Daniel";
+        command = FindCommand.COMMAND_WORD + " " + PREFIX_NAME + " clothes clothes ice";
         assertCommandSuccess(command, expectedModel);
         assertSelectedCardUnchanged();
 
         /* Case: find multiple expenses in address book, 2 matching keywords and 1 non-matching keyword
          * -> 2 expenses found
          */
-        command = FindCommand.COMMAND_WORD + " Daniel Benson NonMatchingKeyWord";
+        command = FindCommand.COMMAND_WORD + " " + PREFIX_NAME + " ice clothes NonMatchingKeyWord";
         assertCommandSuccess(command, expectedModel);
         assertSelectedCardUnchanged();
 
@@ -83,71 +99,77 @@ public class FindCommandSystemTest extends AddressBookSystemTest {
 
         /* Case: find same expenses in address book after deleting 1 of them -> 1 expense found */
         executeCommand(DeleteCommand.COMMAND_WORD + " 1");
-        assertFalse(getModel().getAddressBook().getExpenseList().contains(BENSON));
-        command = FindCommand.COMMAND_WORD + " " + KEYWORD_MATCHING_MEIER;
+        assertFalse(getModel().getAddressBook().getExpenseList().contains(ICECREAM));
+        command = FindCommand.COMMAND_WORD + " " + KEYWORD_MATCHING_LUNCH;
         expectedModel = getModel();
-        ModelHelper.setFilteredList(expectedModel, DANIEL);
+        ModelHelper.setFilteredList(expectedModel, LUNCH);
         assertCommandSuccess(command, expectedModel);
         assertSelectedCardUnchanged();
 
         /* Case: find expense in address book, keyword is same as name but of different case -> 1 expense found */
-        command = FindCommand.COMMAND_WORD + " MeIeR";
+        command = FindCommand.COMMAND_WORD + " " + PREFIX_NAME + " have";
         assertCommandSuccess(command, expectedModel);
         assertSelectedCardUnchanged();
 
         /* Case: find expense in address book, keyword is substring of name -> 0 expenses found */
-        command = FindCommand.COMMAND_WORD + " Mei";
+        command = FindCommand.COMMAND_WORD + " " + PREFIX_NAME + " fo";
         ModelHelper.setFilteredList(expectedModel);
         assertCommandSuccess(command, expectedModel);
         assertSelectedCardUnchanged();
 
         /* Case: find expense in address book, name is substring of keyword -> 0 expenses found */
-        command = FindCommand.COMMAND_WORD + " Meiers";
+        command = FindCommand.COMMAND_WORD + " " + PREFIX_NAME + " ha";
         ModelHelper.setFilteredList(expectedModel);
         assertCommandSuccess(command, expectedModel);
         assertSelectedCardUnchanged();
 
         /* Case: find expense not in address book -> 0 expenses found */
-        command = FindCommand.COMMAND_WORD + " Mark";
+        command = FindCommand.COMMAND_WORD + " " + PREFIX_NAME + " gamble";
         assertCommandSuccess(command, expectedModel);
         assertSelectedCardUnchanged();
 
         /* Case: find category name of expense in address book -> 0 expenses found */
-        command = FindCommand.COMMAND_WORD + " " + DANIEL.getCategory().getName();
+        command = FindCommand.COMMAND_WORD + " " + PREFIX_NAME + CLOTHES.getCategory().categoryName;
         assertCommandSuccess(command, expectedModel);
         assertSelectedCardUnchanged();
 
         /* Case: find address of expense in address book -> 0 expenses found */
-        command = FindCommand.COMMAND_WORD + " " + DANIEL.getCost().value;
-        assertCommandSuccess(command, expectedModel);
+        command = FindCommand.COMMAND_WORD + " " + PREFIX_NAME + CLOTHES.getCost().value;
+        assertCommandFailure(command, String.format(MESSAGE_INVALID_COMMAND_FORMAT, Name.MESSAGE_NAME_CONSTRAINTS));
         assertSelectedCardUnchanged();
 
         /* Case: find tags of expense in address book -> 0 expenses found */
-        List<Tag> tags = new ArrayList<>(DANIEL.getTags());
-        command = FindCommand.COMMAND_WORD + " " + tags.get(0).tagName;
+        List<Tag> tags = new ArrayList<>(CLOTHES.getTags());
+        command = FindCommand.COMMAND_WORD + " " + PREFIX_NAME + tags.get(0).tagName;
         assertCommandSuccess(command, expectedModel);
         assertSelectedCardUnchanged();
 
         /* Case: find while a expense is selected -> selected card deselected */
         showAllExpenses();
         selectExpense(Index.fromOneBased(1));
-        assertFalse(getExpenseListPanel().getHandleToSelectedCard().getName().equals(DANIEL.getName().expenseName));
-        command = FindCommand.COMMAND_WORD + " Daniel";
-        ModelHelper.setFilteredList(expectedModel, DANIEL);
+        assertFalse(getExpenseListPanel().getHandleToSelectedCard().getName().equals(CLOTHES.getName().expenseName));
+        command = FindCommand.COMMAND_WORD + " " + PREFIX_NAME + " clothes";
+        ModelHelper.setFilteredList(expectedModel, CLOTHES);
         assertCommandSuccess(command, expectedModel);
         assertSelectedCardDeselected();
 
         /* Case: find expense in empty address book -> 0 expenses found */
         deleteAllExpenses();
-        command = FindCommand.COMMAND_WORD + " " + KEYWORD_MATCHING_MEIER;
+        command = FindCommand.COMMAND_WORD + " " + KEYWORD_MATCHING_BUY;
         expectedModel = getModel();
-        ModelHelper.setFilteredList(expectedModel, DANIEL);
+        ModelHelper.setFilteredList(expectedModel, CLOTHES);
         assertCommandSuccess(command, expectedModel);
         assertSelectedCardUnchanged();
 
         /* Case: mixed case command word -> rejected */
-        command = "FiNd Meier";
+        command = "FiNd n/Tax";
         assertCommandFailure(command, MESSAGE_UNKNOWN_COMMAND);
+
+        /* Case: no prefix before keywords -> rejected */
+        command = FindCommand.COMMAND_WORD + " Tax";
+        assertCommandFailure(command, String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+
+
     }
 
     /**

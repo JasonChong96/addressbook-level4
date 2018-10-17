@@ -30,7 +30,7 @@ public class GuiTestAssert {
      */
     public static void assertCardDisplaysExpense(Expense expectedExpense, ExpenseCardHandle actualCard) {
         assertEquals(expectedExpense.getName().expenseName, actualCard.getName());
-        assertEquals(expectedExpense.getCategory().getName(), actualCard.getCategory());
+        assertEquals(expectedExpense.getCategory().categoryName, actualCard.getCategory());
         assertEquals(expectedExpense.getCost().value, actualCard.getCost());
         assertEquals(expectedExpense.getTags().stream().map(tag -> tag.tagName).collect(Collectors.toList()),
                 actualCard.getTags());

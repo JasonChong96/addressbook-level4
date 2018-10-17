@@ -8,6 +8,7 @@ import seedu.address.commons.core.EventsCenter;
 import seedu.address.commons.core.Messages;
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.events.ui.JumpToListRequestEvent;
+import seedu.address.commons.events.ui.SwapLeftPanelEvent;
 import seedu.address.logic.CommandHistory;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
@@ -38,7 +39,7 @@ public class SelectCommand extends Command {
     @Override
     public CommandResult execute(Model model, CommandHistory history) throws CommandException, NoUserSelectedException {
         requireNonNull(model);
-
+        EventsCenter.getInstance().post(new SwapLeftPanelEvent(SwapLeftPanelEvent.PanelType.LIST));
         List<Expense> filteredExpenseList = model.getFilteredExpenseList();
 
         if (targetIndex.getZeroBased() >= filteredExpenseList.size()) {

@@ -15,7 +15,7 @@ public class UserPrefs {
     private Path addressBookDirPath = Paths.get("data");
 
     public UserPrefs() {
-        setGuiSettings(500, 500, 0, 0);
+        setGuiSettings(900, 800, 0, 0);
     }
 
     public GuiSettings getGuiSettings() {

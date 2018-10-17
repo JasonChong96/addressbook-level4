@@ -7,6 +7,8 @@ import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSucces
 import org.junit.Test;
 
 import seedu.address.logic.commands.LoginCommand;
+import seedu.address.model.user.Password;
+import seedu.address.model.user.PasswordTest;
 import seedu.address.model.user.Username;
 import seedu.address.model.user.UsernameTest;
 
@@ -16,13 +18,35 @@ public class LoginCommandParserTest {
 
     @Test
     public void parse_validUsername() {
-        assertParseSuccess(parser, UsernameTest.VALID_USERNAME_STRING,
-                new LoginCommand(new Username(UsernameTest.VALID_USERNAME_STRING)));
+        assertParseSuccess(parser, " " + CliSyntax.PREFIX_USERNAME + UsernameTest.VALID_USERNAME_STRING,
+                new LoginCommand(new Username(UsernameTest.VALID_USERNAME_STRING), null));
+    }
+
+    @Test
+    public void parse_validUsernamePassword() {
+        assertParseSuccess(parser, " " + CliSyntax.PREFIX_USERNAME + UsernameTest.VALID_USERNAME_STRING
+                + " " + CliSyntax.PREFIX_PASSWORD + PasswordTest.VALID_PASSWORD_STRING,
+                new LoginCommand(new Username(UsernameTest.VALID_USERNAME_STRING),
+                        new Password(PasswordTest.VALID_PASSWORD_STRING, true)));
+    }
+
+    @Test
+    public void parse_invalidSyntax() {
+        assertParseFailure(parser, UsernameTest.INVALID_USERNAME_STRING,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, LoginCommand.MESSAGE_USAGE));
     }
 
     @Test
     public void parse_invalidUsername() {
-        assertParseFailure(parser, UsernameTest.INVALID_USERNAME_STRING,
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, LoginCommand.MESSAGE_USAGE));
+        assertParseFailure(parser, " " + CliSyntax.PREFIX_USERNAME + UsernameTest.INVALID_USERNAME_STRING,
+                Username.MESSAGE_NAME_CONSTRAINTS);
+    }
+
+    @Test
+    public void parse_invalidPassword() {
+        assertParseFailure(parser,
+                " " + CliSyntax.PREFIX_USERNAME + UsernameTest.VALID_USERNAME_STRING + " "
+                        + CliSyntax.PREFIX_PASSWORD + PasswordTest.INVALID_PASSWORD_STRING_SHORT,
+                Password.MESSAGE_PASSWORD_CONSTRAINTS);
     }
 }

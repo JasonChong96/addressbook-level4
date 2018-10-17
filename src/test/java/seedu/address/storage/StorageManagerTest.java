@@ -8,6 +8,7 @@ import static seedu.address.testutil.TypicalExpenses.getTypicalAddressBook;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -81,7 +82,8 @@ public class StorageManagerTest {
         // Create a StorageManager while injecting a stub that  throws an exception when the save method is called
         Storage storage = new StorageManager(new XmlExpensesStorageExceptionThrowingStub(Paths.get("dummy")),
                                              new JsonUserPrefsStorage(Paths.get("dummy")));
-        storage.handleAddressBookChangedEvent(new AddressBookChangedEvent(new AddressBook(ModelUtil.TEST_USERNAME)));
+        storage.handleAddressBookChangedEvent(
+                new AddressBookChangedEvent(new AddressBook(ModelUtil.TEST_USERNAME, Optional.empty())));
         assertTrue(eventsCollectorRule.eventsCollector.getMostRecent() instanceof DataSavingExceptionEvent);
     }
 

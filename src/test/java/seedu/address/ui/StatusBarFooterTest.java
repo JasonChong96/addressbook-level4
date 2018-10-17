@@ -11,6 +11,7 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.Optional;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -28,7 +29,7 @@ public class StatusBarFooterTest extends GuiUnitTest {
     private static final Path RELATIVE_PATH = Paths.get(".");
 
     private static final AddressBookChangedEvent EVENT_STUB = new AddressBookChangedEvent(
-            new AddressBook(ModelUtil.TEST_USERNAME));
+            new AddressBook(ModelUtil.TEST_USERNAME, Optional.empty()));
 
     private static final Clock originalClock = StatusBarFooter.getClock();
     private static final Clock injectedClock = Clock.fixed(Instant.now(), ZoneId.systemDefault());

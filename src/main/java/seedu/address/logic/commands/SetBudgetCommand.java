@@ -2,6 +2,8 @@ package seedu.address.logic.commands;
 //@author winsonhys
 import static java.util.Objects.requireNonNull;
 
+import seedu.address.commons.core.EventsCenter;
+import seedu.address.commons.events.ui.UpdateBudgetPanelEvent;
 import seedu.address.logic.CommandHistory;
 import seedu.address.model.Model;
 import seedu.address.model.budget.Budget;
@@ -37,6 +39,7 @@ public class SetBudgetCommand extends Command {
 
         model.modifyMaximumBudget(this.toSet);
         model.commitAddressBook();
+        EventsCenter.getInstance().post(new UpdateBudgetPanelEvent(model.getMaximumBudget()));
         return new CommandResult(String.format(MESSAGE_SUCCESS, this.toSet));
     }
 

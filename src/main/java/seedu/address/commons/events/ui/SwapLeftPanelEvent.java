@@ -4,7 +4,7 @@ import seedu.address.commons.events.BaseEvent;
 
 //@@author snookerballs
 /**
- * Indicates that a panel swap is required.
+ * An event requesting a panel swap.
  */
 public class SwapLeftPanelEvent extends BaseEvent {
 

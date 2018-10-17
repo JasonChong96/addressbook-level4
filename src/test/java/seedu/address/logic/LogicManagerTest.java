@@ -6,13 +6,18 @@ import static org.junit.Assert.assertTrue;
 import static seedu.address.commons.core.Messages.MESSAGE_INVALID_EXPENSE_DISPLAYED_INDEX;
 import static seedu.address.commons.core.Messages.MESSAGE_UNKNOWN_COMMAND;
 
+import java.text.SimpleDateFormat;
+import java.util.LinkedHashMap;
+
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.rules.ExpectedException;
 
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.HistoryCommand;
 import seedu.address.logic.commands.ListCommand;
+import seedu.address.logic.commands.StatsCommand.StatsMode;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.Model;
@@ -21,16 +26,25 @@ import seedu.address.model.UserPrefs;
 import seedu.address.model.exceptions.NoUserSelectedException;
 import seedu.address.model.exceptions.NonExistentUserException;
 import seedu.address.model.exceptions.UserAlreadyExistsException;
+import seedu.address.model.expense.Expense;
+import seedu.address.testutil.ExpenseBuilder;
 import seedu.address.testutil.ModelUtil;
 
 public class LogicManagerTest {
+
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
     private Model model = ModelUtil.modelWithTestUser();
+
     private Logic logic = new LogicManager(model);
 
     public LogicManagerTest() throws UserAlreadyExistsException, NonExistentUserException, NoUserSelectedException {
+    }
+
+    @BeforeEach
+    public void clearModel() throws UserAlreadyExistsException, NonExistentUserException, NoUserSelectedException {
+        model = ModelUtil.modelWithTestUser();
     }
 
     @Test
@@ -60,10 +74,35 @@ public class LogicManagerTest {
         logic.getFilteredExpenseList().remove(0);
     }
 
-
     @Test
     public void getExpenseStats_returnsEmptyMapWhenNoEntries() throws NoUserSelectedException {
         assertTrue(logic.getExpenseStats().size() == 0);
+    }
+
+    @Test
+    public void getExpenseStatsReturnsMapWithCorrectEntries() throws NoUserSelectedException {
+        Expense validExpense = new ExpenseBuilder().build();
+        model.addExpense(validExpense);
+        model.updateStatsMode(StatsMode.DAY);
+        LinkedHashMap<String, Double> map = logic.getExpenseStats();
+        assertTrue(map.size() > 0);
+        assertTrue(map.containsKey(validExpense.getDate().toString()));
+        assertTrue(map.get(validExpense.getDate().toString()) == validExpense.getCost().getCostValue());
+
+        model.updateStatsMode(StatsMode.MONTH);
+        map = logic.getExpenseStats();
+        String month = new SimpleDateFormat("MMM-YYYY").format(validExpense.getDate().fullDate.getTime());
+        assertTrue(map.size() > 0);
+        assertTrue(map.containsKey(month));
+        assertTrue(map.get(month) == validExpense.getCost().getCostValue());
+    }
+
+    @Test
+    public void getExpenseStatsReturnsCorrectStatsMode() throws NoUserSelectedException {
+        model.updateStatsMode(StatsMode.DAY);
+        assertTrue(logic.getStatsMode() == StatsMode.DAY);
+        model.updateStatsMode(StatsMode.MONTH);
+        assertTrue(logic.getStatsMode() == StatsMode.MONTH);
     }
 
     /**

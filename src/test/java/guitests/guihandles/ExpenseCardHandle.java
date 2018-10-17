@@ -72,7 +72,7 @@ public class ExpenseCardHandle extends NodeHandle<Node> {
     public boolean equals(Expense expense) {
         return getName().equals(expense.getName().expenseName)
                 && getCost().equals(expense.getCost().value)
-                && getCategory().equals(expense.getCategory().getName())
+                && getCategory().equals(expense.getCategory().categoryName)
                 && ImmutableMultiset.copyOf(getTags()).equals(ImmutableMultiset.copyOf(expense.getTags().stream()
                         .map(tag -> tag.tagName)
                         .collect(Collectors.toList())));

@@ -3,6 +3,8 @@ package seedu.address.logic.commands;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.testutil.TypicalExpenses.getTypicalAddressBook;
 
+import java.util.Optional;
+
 import org.junit.Test;
 
 import seedu.address.logic.CommandHistory;
@@ -37,7 +39,7 @@ public class ClearCommandTest {
         Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
 
         Model expectedModel = new ModelManager(getTypicalAddressBook(), new UserPrefs());
-        expectedModel.resetData(new AddressBook(new Username("typicalAddressBook")));
+        expectedModel.resetData(new AddressBook(new Username("typicalAddressBook"), Optional.empty()));
 
         Budget clearedBudget = model.getMaximumBudget();
         clearedBudget.clearSpending();

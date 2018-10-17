@@ -62,7 +62,7 @@ public class XmlAdaptedExpense {
      */
     public XmlAdaptedExpense(Expense source) {
         name = source.getName().expenseName;
-        category = source.getCategory().getName();
+        category = source.getCategory().categoryName;
         cost = source.getCost().value;
         date = source.getDate().toString();
         tagged = source.getTags().stream()
@@ -102,7 +102,7 @@ public class XmlAdaptedExpense {
             throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, Cost.class.getSimpleName()));
         }
         if (!Cost.isValidCost(cost)) {
-            throw new IllegalValueException(Cost.MESSAGE_ADDRESS_CONSTRAINTS);
+            throw new IllegalValueException(Cost.MESSAGE_COST_CONSTRAINTS);
         }
         final Cost modelCost = new Cost(cost);
 

@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static seedu.address.commons.core.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.commons.core.Messages.MESSAGE_UNKNOWN_COMMAND;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_EXPENSE;
 
 import java.util.Arrays;
@@ -24,13 +25,16 @@ import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.HistoryCommand;
 import seedu.address.logic.commands.ListCommand;
+import seedu.address.logic.commands.LoginCommand;
 import seedu.address.logic.commands.RedoCommand;
 import seedu.address.logic.commands.SelectCommand;
+import seedu.address.logic.commands.SetPasswordCommand;
+import seedu.address.logic.commands.SignUpCommand;
 import seedu.address.logic.commands.StatsCommand;
 import seedu.address.logic.commands.UndoCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.expense.Expense;
-import seedu.address.model.expense.NameContainsKeywordsPredicate;
+import seedu.address.model.expense.ExpenseContainsKeywordsPredicate;
 import seedu.address.testutil.EditExpenseDescriptorBuilder;
 import seedu.address.testutil.ExpenseBuilder;
 import seedu.address.testutil.ExpenseUtil;
@@ -91,12 +95,13 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_find() throws Exception {
         List<String> keywords = Arrays.asList("foo", "bar", "baz");
+        ArgumentMultimap keywordsMap = ArgumentTokenizer.tokenize(" n/foo bar baz", PREFIX_NAME);
         FindCommand command = (FindCommand) parser.parseCommand(
-                FindCommand.COMMAND_WORD + " " + keywords.stream().collect(Collectors.joining(" ")));
-        assertEquals(new FindCommand(new NameContainsKeywordsPredicate(keywords)), command);
+                FindCommand.COMMAND_WORD + " " + PREFIX_NAME + keywords.stream().collect(Collectors.joining(" ")));
+        assertEquals(new FindCommand(new ExpenseContainsKeywordsPredicate(keywordsMap)), command);
         command = (FindCommand) parser.parseCommand(
-                FindCommand.COMMAND_ALIAS + " " + keywords.stream().collect(Collectors.joining(" ")));
-        assertEquals(new FindCommand(new NameContainsKeywordsPredicate(keywords)), command);
+                FindCommand.COMMAND_ALIAS + " " + PREFIX_NAME + keywords.stream().collect(Collectors.joining(" ")));
+        assertEquals(new FindCommand(new ExpenseContainsKeywordsPredicate(keywordsMap)), command);
     }
 
     @Test
@@ -155,11 +160,31 @@ public class AddressBookParserTest {
     }
 
     @Test
+    public void parseCommand_login() throws Exception {
+        assertTrue(parser.parseCommand(LoginCommand.COMMAND_WORD + " u/userna p/assadd") instanceof LoginCommand);
+        assertTrue(parser.parseCommand(LoginCommand.COMMAND_ALIAS + " u/userna p/assadd") instanceof LoginCommand);
+    }
+
+    @Test
+    public void parseCommand_signUpCommand() throws Exception {
+        assertTrue(parser.parseCommand(SignUpCommand.COMMAND_WORD + " ssssss") instanceof SignUpCommand);
+        assertTrue(parser.parseCommand(SignUpCommand.COMMAND_ALIAS + " ssssss") instanceof SignUpCommand);
+    }
+
+    @Test
+    public void parseCommand_setPassword() throws Exception {
+        assertTrue(parser.parseCommand(SetPasswordCommand.COMMAND_WORD + " o/dsdfsdf7 n/sdfsdf")
+                instanceof SetPasswordCommand);
+        assertTrue(parser.parseCommand(SetPasswordCommand.COMMAND_ALIAS + " o/dsdfsdf7 n/sdfsdf")
+                instanceof SetPasswordCommand);
+    }
+
+    @Test
     public void parseCommand_stats() throws Exception {
         assertTrue(parser.parseCommand(StatsCommand.COMMAND_WORD) instanceof StatsCommand);
-        assertTrue(parser.parseCommand(StatsCommand.COMMAND_WORD + " 3") instanceof StatsCommand);
+        assertTrue(parser.parseCommand(StatsCommand.COMMAND_WORD + " n/7 m/m") instanceof StatsCommand);
         assertTrue(parser.parseCommand(StatsCommand.COMMAND_ALIAS) instanceof StatsCommand);
-        assertTrue(parser.parseCommand(StatsCommand.COMMAND_ALIAS + " 3") instanceof StatsCommand);
+        assertTrue(parser.parseCommand(StatsCommand.COMMAND_ALIAS + " n/7 m/m") instanceof StatsCommand);
     }
 
     @Test

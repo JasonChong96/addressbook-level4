@@ -7,7 +7,7 @@ import static seedu.address.commons.core.Messages.MESSAGE_UNKNOWN_COMMAND;
 import static seedu.address.logic.commands.SelectCommand.MESSAGE_SELECT_EXPENSE_SUCCESS;
 import static seedu.address.testutil.TestUtil.getLastIndex;
 import static seedu.address.testutil.TestUtil.getMidIndex;
-import static seedu.address.testutil.TypicalExpenses.KEYWORD_MATCHING_MEIER;
+import static seedu.address.testutil.TypicalExpenses.KEYWORD_MATCHING_BUY;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_EXPENSE;
 
 import org.junit.Test;
@@ -22,6 +22,7 @@ import seedu.address.model.exceptions.NoUserSelectedException;
 public class SelectCommandSystemTest extends AddressBookSystemTest {
     @Test
     public void select() throws NoUserSelectedException {
+        showAllExpenses();
         /* --------------------- Perform select operations on the shown unfiltered list ----------------------- */
 
         /* Case: select the first card in the expense list, command with leading spaces and trailing spaces
@@ -58,7 +59,7 @@ public class SelectCommandSystemTest extends AddressBookSystemTest {
         /* Case: filtered expense list, select index within bounds of address book but out of bounds of expense list
          * -> rejected
          */
-        showExpensesWithName(KEYWORD_MATCHING_MEIER);
+        showExpensesWithName(KEYWORD_MATCHING_BUY);
         int invalidIndex = getModel().getAddressBook().getExpenseList().size();
         assertCommandFailure(SelectCommand.COMMAND_WORD + " " + invalidIndex,
                 MESSAGE_INVALID_EXPENSE_DISPLAYED_INDEX);

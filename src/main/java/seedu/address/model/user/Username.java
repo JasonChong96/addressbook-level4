@@ -13,15 +13,14 @@ public class Username implements Comparable<Username> {
             "Names cannot contain any of these characters: \" > < : \\ / | ? *";
 
     /*
-     * The first character of the address must not be a whitespace,
-     * otherwise " " (a blank string) becomes a valid input.
+     * Username cannot contain any of the following characters : " > < : \ / | ? *
      */
     private static final String USERNAME_VALIDATION_REGEX = ".*[/\\\\:*?\"<>|].*";
 
     private final String name;
 
     /**
-     * Constructs a {@code Name}.
+     * Constructs a {@code Username}.
      *
      * @param name A valid name.
      */

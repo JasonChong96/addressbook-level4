@@ -3,15 +3,16 @@ package seedu.address.model;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_COST_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_COST_IPHONE;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
-import static seedu.address.testutil.TypicalExpenses.ALICE;
+import static seedu.address.testutil.TypicalExpenses.SCHOOLFEE;
 import static seedu.address.testutil.TypicalExpenses.getTypicalAddressBook;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -22,6 +23,7 @@ import javafx.collections.ObservableList;
 import seedu.address.model.budget.Budget;
 import seedu.address.model.expense.Expense;
 import seedu.address.model.expense.exceptions.DuplicateExpenseException;
+import seedu.address.model.user.Password;
 import seedu.address.model.user.Username;
 import seedu.address.testutil.ExpenseBuilder;
 import seedu.address.testutil.ModelUtil;
@@ -31,7 +33,7 @@ public class AddressBookTest {
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
-    private final AddressBook addressBook = new AddressBook(ModelUtil.TEST_USERNAME);
+    private final AddressBook addressBook = new AddressBook(ModelUtil.TEST_USERNAME, Optional.empty());
 
     @Test
     public void constructor() {
@@ -56,9 +58,9 @@ public class AddressBookTest {
     @Test
     public void resetData_withDuplicateExpenses_throwsDuplicateExpenseException() {
         // Two expenses with the same identity fields
-        Expense editedAlice = new ExpenseBuilder(ALICE).withCost(VALID_COST_BOB).withTags(VALID_TAG_HUSBAND)
+        Expense editedAlice = new ExpenseBuilder(SCHOOLFEE).withCost(VALID_COST_IPHONE).withTags(VALID_TAG_HUSBAND)
                 .build();
-        List<Expense> newExpenses = Arrays.asList(ALICE, editedAlice);
+        List<Expense> newExpenses = Arrays.asList(SCHOOLFEE, editedAlice);
         AddressBookStub newData = new AddressBookStub(newExpenses);
 
         thrown.expect(DuplicateExpenseException.class);
@@ -73,19 +75,19 @@ public class AddressBookTest {
 
     @Test
     public void hasExpense_expenseNotInAddressBook_returnsFalse() {
-        assertFalse(addressBook.hasExpense(ALICE));
+        assertFalse(addressBook.hasExpense(SCHOOLFEE));
     }
 
     @Test
     public void hasExpense_expenseInAddressBook_returnsTrue() {
-        addressBook.addExpense(ALICE);
-        assertTrue(addressBook.hasExpense(ALICE));
+        addressBook.addExpense(SCHOOLFEE);
+        assertTrue(addressBook.hasExpense(SCHOOLFEE));
     }
 
     @Test
     public void hasExpense_expenseWithSameIdentityFieldsInAddressBook_returnsTrue() {
-        addressBook.addExpense(ALICE);
-        Expense editedAlice = new ExpenseBuilder(ALICE).withCost(VALID_COST_BOB).withTags(VALID_TAG_HUSBAND)
+        addressBook.addExpense(SCHOOLFEE);
+        Expense editedAlice = new ExpenseBuilder(SCHOOLFEE).withCost(VALID_COST_IPHONE).withTags(VALID_TAG_HUSBAND)
                 .build();
         assertTrue(addressBook.hasExpense(editedAlice));
     }
@@ -120,6 +122,16 @@ public class AddressBookTest {
         @Override
         public Username getUsername() {
             return ModelUtil.TEST_USERNAME;
+        }
+
+        @Override
+        public Optional<Password> getPassword() {
+            return Optional.empty();
+        }
+
+        @Override
+        public boolean isMatchPassword(Password password) {
+            return true;
         }
     }
 

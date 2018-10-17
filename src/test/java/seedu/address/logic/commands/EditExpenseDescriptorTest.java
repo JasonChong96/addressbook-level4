@@ -5,9 +5,9 @@ import static org.junit.Assert.assertTrue;
 
 import static seedu.address.logic.commands.CommandTestUtil.DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.DESC_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_CATEGORY_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_COST_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_CATEGORY_IPHONE;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_COST_IPHONE;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_IPHONE;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
 
 import org.junit.Test;
@@ -37,15 +37,15 @@ public class EditExpenseDescriptorTest {
 
         // different name -> returns false
         EditCommand.EditExpenseDescriptor editedAmy =
-                new EditExpenseDescriptorBuilder(DESC_AMY).withName(VALID_NAME_BOB).build();
+                new EditExpenseDescriptorBuilder(DESC_AMY).withName(VALID_NAME_IPHONE).build();
         assertFalse(DESC_AMY.equals(editedAmy));
 
         // different category -> returns false
-        editedAmy = new EditExpenseDescriptorBuilder(DESC_AMY).withCategory(VALID_CATEGORY_BOB).build();
+        editedAmy = new EditExpenseDescriptorBuilder(DESC_AMY).withCategory(VALID_CATEGORY_IPHONE).build();
         assertFalse(DESC_AMY.equals(editedAmy));
 
         // different address -> returns false
-        editedAmy = new EditExpenseDescriptorBuilder(DESC_AMY).withCost(VALID_COST_BOB).build();
+        editedAmy = new EditExpenseDescriptorBuilder(DESC_AMY).withCost(VALID_COST_IPHONE).build();
         assertFalse(DESC_AMY.equals(editedAmy));
 
         // different tags -> returns false

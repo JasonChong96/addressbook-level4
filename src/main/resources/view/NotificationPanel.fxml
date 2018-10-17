@@ -7,7 +7,7 @@
 <!-- @@Snookerballs -->
 <VBox minHeight="10" minWidth="10" prefHeight="356.0" prefWidth="338.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Label id = "sectionHeader" text="Notifications" />
-      <ListView prefHeight="359.0" prefWidth="338.0" />
+      <Label text="Notifications" />
+      <ListView fx:id ="notificationListView" prefHeight="359.0" prefWidth="338.0" />
    </children>
 </VBox>

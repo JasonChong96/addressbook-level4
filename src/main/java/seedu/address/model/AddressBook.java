@@ -3,12 +3,14 @@ package seedu.address.model;
 import static java.util.Objects.requireNonNull;
 
 import java.util.List;
+import java.util.Optional;
 
 import javafx.collections.ObservableList;
 
 import seedu.address.model.budget.Budget;
 import seedu.address.model.expense.Expense;
 import seedu.address.model.expense.UniqueExpenseList;
+import seedu.address.model.user.Password;
 import seedu.address.model.user.Username;
 
 /**
@@ -18,6 +20,7 @@ import seedu.address.model.user.Username;
 public class AddressBook implements ReadOnlyAddressBook {
 
     protected Username username;
+    protected Optional<Password> password;
     private final UniqueExpenseList expenses;
     private Budget maximumBudget;
 
@@ -25,8 +28,9 @@ public class AddressBook implements ReadOnlyAddressBook {
      * Creates an empty AddressBook with the given username.
      * @param username the username of the AddressBook
      */
-    public AddressBook(Username username) {
+    public AddressBook(Username username, Optional<Password> password) {
         this.username = username;
+        this.password = password;
         this.expenses = new UniqueExpenseList();
         this.maximumBudget = new Budget("28.00");
     }
@@ -35,7 +39,8 @@ public class AddressBook implements ReadOnlyAddressBook {
      * Creates an AddressBook using the Expenses in the {@code toBeCopied}
      */
     public AddressBook(ReadOnlyAddressBook toBeCopied) {
-        this(toBeCopied.getUsername());
+        this(toBeCopied.getUsername(), toBeCopied.getPassword());
+        this.maximumBudget = toBeCopied.getMaximumBudget();
         resetData(toBeCopied);
     }
     //// budget operations
@@ -55,6 +60,12 @@ public class AddressBook implements ReadOnlyAddressBook {
     public void modifyMaximumBudget(Budget budget) {
         this.maximumBudget = budget;
     }
+
+    public void setRecurrenceFrequency(long seconds) {
+        this.maximumBudget.setRecurrenceFrequency(seconds);
+    }
+
+
     //// list overwrite operaticons
 
     /**
@@ -119,11 +130,25 @@ public class AddressBook implements ReadOnlyAddressBook {
     }
 
     public Budget getMaximumBudget() {
-        return new Budget(this.maximumBudget.getBudgetCap(), this.maximumBudget.getCurrentExpenses());
+        return new Budget(this.maximumBudget.getBudgetCap(), this.maximumBudget.getCurrentExpenses(),
+            this.maximumBudget.getNextRecurrence(), this.maximumBudget.getNumberOfSecondsToRecurAgain());
     }
 
+    @Override
     public Username getUsername() {
         return username;
+    }
+
+    @Override
+    public Optional<Password> getPassword() {
+        return password;
+    }
+
+    @Override
+    public boolean isMatchPassword(Password toCheck) {
+        return this.password
+                .map(userPassword -> userPassword.equals(toCheck))
+                .orElse(true); // If the current user has no password, then anyone is allowed
     }
 
     public void setUsername(Username newUsername) {

@@ -61,6 +61,45 @@ public class Date {
         return false;
     }
 
+    /**
+     * return true if {@code this} is earlier than {@param other}
+     * */
+    //@@author Jiang Chen
+    public boolean isEalierThan(Date other) {
+
+        int thisYear = this.fullDate.get(Calendar.YEAR);
+        int otherYear = other.fullDate.get(Calendar.YEAR);
+        if (thisYear < otherYear) {
+            return true;
+        }
+        if (thisYear > otherYear) {
+            return false;
+        }
+
+
+        int thisMonth = this.fullDate.get(Calendar.MONTH);
+        int otherMonth = other.fullDate.get(Calendar.MONTH);
+        if (thisMonth < otherMonth) {
+            return true;
+        }
+        if (thisMonth > otherMonth) {
+            return false;
+        }
+
+
+        int thisDay = this.fullDate.get(Calendar.DAY_OF_YEAR);
+        int otherDay = other.fullDate.get(Calendar.DAY_OF_YEAR);
+
+        if (thisDay < otherDay) {
+            return true;
+        }
+        if (thisDay > otherDay) {
+            return false;
+        }
+
+        return false;
+    }
+
     @Override
     public String toString() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
@@ -84,5 +123,20 @@ public class Date {
         return fullDate.get(Calendar.DAY_OF_YEAR) == otherDate.fullDate.get(Calendar.DAY_OF_YEAR)
                 && fullDate.get(Calendar.MONTH) == otherDate.fullDate.get(Calendar.MONTH)
                 && fullDate.get(Calendar.YEAR) == otherDate.fullDate.get(Calendar.YEAR);
+    }
+
+    /**
+     *
+     * @param a - First Date to compare
+     * @param b - Second Date to compare
+     * @return 1 if b is after a, -1 if b is before a and 0 if they are equal
+     */
+    public static int compare(Date a, Date b) {
+        if (a.equals(b)) {
+            return 0;
+        } else if (b.fullDate.after(a.fullDate)) {
+            return 1;
+        }
+        return -1;
     }
 }

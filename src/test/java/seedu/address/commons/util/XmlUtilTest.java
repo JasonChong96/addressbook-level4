@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -108,7 +109,7 @@ public class XmlUtilTest {
     @Test
     public void saveDataToFile_nullFile_throwsNullPointerException() throws Exception {
         thrown.expect(NullPointerException.class);
-        XmlUtil.saveDataToFile(null, new AddressBook(new Username("aaa")));
+        XmlUtil.saveDataToFile(null, new AddressBook(new Username("aaa"), Optional.empty()));
     }
 
     @Test
@@ -120,18 +121,19 @@ public class XmlUtilTest {
     @Test
     public void saveDataToFile_missingFile_fileNotFoundException() throws Exception {
         thrown.expect(FileNotFoundException.class);
-        XmlUtil.saveDataToFile(MISSING_FILE, new AddressBook(new Username("aaa")));
+        XmlUtil.saveDataToFile(MISSING_FILE, new AddressBook(new Username("aaa"), Optional.empty()));
     }
 
     @Test
     public void saveDataToFile_validFile_dataSaved() throws Exception {
         FileUtil.createFile(TEMP_FILE);
-        XmlSerializableAddressBook dataToWrite = new XmlSerializableAddressBook(new AddressBook(new Username("AA")));
+        XmlSerializableAddressBook dataToWrite =
+                new XmlSerializableAddressBook(new AddressBook(new Username("AA"), Optional.empty()));
         XmlUtil.saveDataToFile(TEMP_FILE, dataToWrite);
         XmlSerializableAddressBook dataFromFile = XmlUtil.getDataFromFile(TEMP_FILE, XmlSerializableAddressBook.class);
         assertEquals(dataToWrite, dataFromFile);
 
-        AddressBookBuilder builder = new AddressBookBuilder(new AddressBook(new Username("AAA")));
+        AddressBookBuilder builder = new AddressBookBuilder(new AddressBook(new Username("AAA"), Optional.empty()));
         dataToWrite = new XmlSerializableAddressBook(
                 builder.withExpense(new ExpenseBuilder().build()).build());
 

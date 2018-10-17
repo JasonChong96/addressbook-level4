@@ -8,7 +8,6 @@ import seedu.address.model.expense.Expense;
  */
 public class ExpensePanelSelectionChangedEvent extends BaseEvent {
 
-
     private final Expense newSelection;
 
     public ExpensePanelSelectionChangedEvent(Expense newSelection) {
